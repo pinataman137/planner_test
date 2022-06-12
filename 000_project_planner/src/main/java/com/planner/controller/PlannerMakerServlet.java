@@ -37,7 +37,7 @@ public class PlannerMakerServlet extends HttpServlet {
 		response.sendRedirect(request.getContextPath()+"/views/planner/plannermap.jsp");
 		
 		
-		String gitTest = "git커밋 테스트";
+		
 		
 	}
 
