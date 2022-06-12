@@ -36,6 +36,9 @@ public class PlannerMakerServlet extends HttpServlet {
 		response.addCookie(forOption);
 		response.sendRedirect(request.getContextPath()+"/views/planner/plannermap.jsp");
 		
+		//-----------------------------------------------------------------------------------
+		//git 테스트
+		String test = "pinataman branch에는 없지!";
 		
 		
 		
