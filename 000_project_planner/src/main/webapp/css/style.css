@@ -1,0 +1,84 @@
+@charset "UTF-8";
+
+	body{
+	 margin:0px;
+	 /* width:100%; */
+	 
+	}
+
+	#map{	
+	 height:100vh;
+     width:80vw;
+     float:right;
+	}
+	   
+    #left{
+     width:500px;
+     height:100vh;
+     background-color: #a0a0a0;
+     float: left;
+     position: fixed;
+   }
+   
+   #yourPlanner{
+   
+   margin-left : 10px;
+   
+   }
+   
+   #myBox{
+   
+   	 padding : 20px;
+   	
+   }
+   
+   #likes{
+   
+	text-align: center;
+	width : 100px;
+	margin-right : 40px;
+   
+   }
+   
+   #titleBox{
+   
+   display : flex;
+   
+   }
+   #tempSaveBtn{
+   margin-left: 100px;
+   margin-top : 22px;
+   background : black;
+   border-radius : 5px;
+   border: none;
+   font-size : 15px;
+   color:white;
+   }
+   
+   #dayPlan{
+   
+   	margin : 20px;
+   	margin-left : 10px;
+   	padding : 10px;
+   	width : 300px;
+   	height : 700px;
+   	border : 1px solid red;
+   }
+
+   #buttons{
+    position : absolute;
+   	left : 100px;
+   	size : 100px;
+   }
+   
+   #sortable{
+   
+   	margin-right:30px;
+   
+   }
+   
+   .box_drag{
+   
+   background-color:white;
+   
+   }
