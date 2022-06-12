@@ -37,6 +37,8 @@ public class PlannerMakerServlet extends HttpServlet {
 		response.sendRedirect(request.getContextPath()+"/views/planner/plannermap.jsp");
 		
 		//-----------------------------------------------------------------------------------
+		//충돌 테스트
+		String confictTest = "충돌~";
 		//git 테스트
 		String test = "pinataman branch에는 없지!";
 		
