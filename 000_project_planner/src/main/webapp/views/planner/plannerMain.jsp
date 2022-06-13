@@ -161,13 +161,14 @@
 				            		
 	            					//console.log("현재 저장된 일정이 있는지", localStorage.getItem(nowCho));
 	            					const savedPlanTemp = localStorage.getItem(nowCho);
+	            					console.log("체크!!!!!!!!!!!!",savedPlanTemp);
 	            					if(savedPlanTemp!=null){
 	            						const savedPlan = savedPlanTemp.split(",");
 	            						console.log("배열로 받아온",nowCho,"의 일정",savedPlan);
 	            						
 	            						
 	            						//작성 기록이 있다면, 카드를 새로 생성해서 출력해주기
-	            						let cntId = 1;
+	            						//let cntId = 1;
 	            						document.getElementById("dropZone").innerHTML=""; //계속 appendChild하면 누적되므로, 먼저 비워주기
 	            						
 										for(let i=0;i<savedPlan.length;i++){
@@ -190,10 +191,15 @@
 										
 	            					} else {
 	            						
+	            						//선택한 일자로 저장된 일정이 없으면, 디폴트로 출력하기
+	            						//document.getElementById("dropZone").innerHTML="";
+	            						let cnt = 1;
+	            						cards.forEach(e=>{	            					
 	            							
-	            						
-	            						
-	            						
+	            							e.innerText = "plan "+cnt++;
+	            							
+	            						})
+
 	            					}
 				            		
 				            						            		
@@ -268,7 +274,7 @@
 		            	          // 데이터 전달 객체에 대상 요소의 id를 추가합니다.
 		            	          ev.dataTransfer.setData("text/plain", ev.target.id);
 		            	          ev.dataTransfer.idx = 1111111111;
-		            	          console.dir('///////////////dragstart_handler////////////////');
+		            	          //console.dir('///////////////dragstart_handler////////////////');
 			            	         console.dir(ev);
 		            	        }
 		            	      
@@ -285,10 +291,19 @@
 		
 		            	        function drop_handler(ev) {
 		            	         ev.preventDefault();
-		            	         console.dir('///////////////drop////////////////');
+		            	         //console.dir('///////////////drop////////////////');
 		            	         console.dir(ev);
 		            	         const data = ev.dataTransfer.getData("text/plain");
-		            	         dropZone.insertBefore(document.getElementById(data),ev.target);
+		            	         
+		            	         //console.log(ev.target.indexOf);
+		            	         const divItems = document.querySelectorAll("div#dropZone>div");
+		            	         // console.log(divItems.length);
+		            	         //console.dir(ev.target.nextElementSibling);
+		            	         
+		            	         if(ev.target.nextElementSibling!=null){
+		            	         	dropZone.insertBefore(document.getElementById(data),ev.target);
+		            	         } else dropZone.insertBefore(document.getElementById(data), null);
+		            	         
 		            	        }
 	            	     	            		
 	            		</script>	
