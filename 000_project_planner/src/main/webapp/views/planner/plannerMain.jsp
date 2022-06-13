@@ -69,20 +69,12 @@
 		                	
 		                	<!-- 사용자가 입력한 일수 만큼, select > option이 생성되도록 구현함 -->
 			                	<select id="daysOption" style="width:310px; margin-left:10px; font-size:20px;">
-<%--         							<% if(fromDate!=0){%>
-        								
-        							<%} %> --%>
 			                	</select>			                			                
 		                </div>		                
 		            
 		                <div id="dayPlanner">
 		                	<div id="titleBox">
 		                		<h3 id="dayTitle"></h3>&nbsp<h4 style="margin-top:23px;">번째 날의 계획</h4>
-		                		
-		                		<!-- select>option변경 시, submit하는 대신 버튼으로만 submit할 수 있는 안도 생각해봄 -->
-<!-- 				           		<div>
-		           					<button id="tempSaveBtn" onclick="submitDailyPlan();">저장하기</button>
-		                		</div> -->
 		                	</div>
 
 		                	
@@ -124,26 +116,9 @@
 								daysOption.appendChild(option);
 							}
 							
-							<%if(fromDate!=0){%>
-							
-								const options = document.querySelectorAll("#daysOption>option");
-								console.log("이거 확인해야 해", options);
-								
-								for(let i=0;i<options.length;i++){
-									
-									if(options[i].innerText==<%=fromDate%>){
-										
-										options[i].selected=true;
-										
-									}
-								}
-								
-							<%}%>
 							
 		            	/* option변경할 때마다, "day n의 여행계획"으로 출력될 텍스트가 변경되도록 구현 */
-		            		
-	            			
-	            		/* ------------------------------------------------------------- */
+		            	
 	            		
 							const thisDay = document.querySelector("#daysOption>option").value;
 	            			
@@ -152,7 +127,7 @@
 							document.getElementById("dayTitle").innerText= <%=fromDate!=0?fromDate:1%>
 	            			
 							
-							
+														
 	            				daysOption.addEventListener("change",e=>{
 	            					
 			            					            				
@@ -160,60 +135,16 @@
 				            		   (0613) localStorage에 저장하는 안으로 수정
 				            		
 				            		*/
-				            		const cards = document.querySelectorAll("div#dropZone>div");
+				            		
+				            		const cards = document.querySelectorAll("div#dropZone>div"); //장소 관련 카드들 불러오기
 				            		console.log(cards);
 				            		
 				            		
-				            		//0611
-				            		//select옵션에서, 일정을 저장한 이력이 있는 일자를 선택한 경우에는----------------
-				            		//(= HttpServletRequest객체로부터 전달받은 값이 있을 경우)
-				            		//card를 해당 일정 정보를 토대로 정렬하도록 함 
-				            		//TODO 잠깐 깜빡하고 출력하는 듯하다가, 리셋됨. 왜지? -> submit이 실행되기 때문임
-				            		//option을 바꾸면 무조건 submit임 (option을 바꾸면 submit대신 내용 열람만 할 수 있게 구현할 수 있을까)
+
+				            		//0613---------------------------------------------------------------
+				            		//임시저장 개념이므로, DB 대신 localStorage로 변경함
 				            		
-				            		<%if (savedDay!=0){ %>
-	
-				            				alert("hi!");
-											let loadDay = <%=savedDay%>;
-											console.log("이전 날짜 불러오기 : ", loadDay);
-											
-											const options = document.querySelectorAll("#daysOption>option");
-											console.log("옵션 불러오기 ", options);
-											
-											for(let i=0;i<options.length;i++){
-												
-												if(options[i].innerText==loadDay&&options[i].selected){ //일정 저장 이력이 있는 일정이 선택된다면!
-													
-													console.log("선택됐어");
-													
-													const savedPlanStr = "<%=savedPlan%>";
-													console.log("저장된 일정 : ",savedPlanStr);
-													const savedPlan = savedPlanStr.split(",");
-													console.log("배열로 만듦 : ", savedPlan);
-													
-													for(let i=0;i<savedPlan.length;i++){
-														//장소 카드의 innerText값 설정하기
-														
-														cards[i].innerText = savedPlan[i];
-														
-													}
-													console.log("일단은 이렇게 저장됨 ",cards);
-													break;
-													
-												} else { //일정 저장 이력이 없는 일자가 선택된다면 
-													//※ (실제로 사용될 때는, 카드는 하나도 생성하지 않는 것!)
-													
-													let resetCnt = 1;
-													
-							            			for(let i=0;i<cards.length;i++){
-							            				cards[i].innerText = "plan "+resetCnt++;
-							            			}
-												}
-												
-											}
-											
-															            		
-				            		<% } %>
+
 				            		
 				            		//장소 방문 순서 편집 관련 로직---------------------------------------------
 				            		//select > option이 바뀜 + 카드 순서가 재배열됨 + option이 또 바뀜, 이면 submit하도록 구현할 수 있을까?
@@ -251,31 +182,13 @@
 			            			document.getElementById("dayTitle").innerText= newDay;
 			            			
 			            			
-			            			//※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※
-			            			//※여기서 문제가 발생합니다.--------------------------------------------------------------
-			            			//option이 변경되면 자동으로 submit이 돼서, 최초의 일정 작성 시 DB에 저장되는 것까지는 구현 가능하나,
-			            			//(DB저장 작업을 완료한 Servlet이, HttpServletRequest로써 본 JSP화면으로 화면을 이동시켜줍니다)
-			            			//직전에 저장한 일정 내용을 확인하고자 option을 변경하면, 바로 submit()이 실행돼요. 
-			            			//어떤 경우에는 submit()을 하고, 어떤 경우에는 DB로부터 받아온 자료를 "열람"만 할 수 있는지 궁금합니다.
+			            			localStorage.setItem(thisDay,arr);
 			            			
-			            			//-> 0612 : localStorage공부할 것!
-			            			
-			            			//document.getElementById("submitDayPlan").submit();
-			            			
-			            			//※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※
-			            			
+			            			//if 문으로 선택 값에 따라 getItem하면 될 거 같다... null 등이 아니면 get이후에 set하면 되지 않을까?
 				            		
 	            			});
 			            			
-	            				
-	            				// "일정별 저장하기"버튼으로써 임시 저장 기능을 구현할 경우의 코드 (그러나 아마 쓰지 않을듯!)
-/* 			            			const submitDailyPlan = ()=>{
-			            				alert("안녕!");
-			            				document.getElementById("submitDayPlan").submit();
-			            			} */
-									
-			            			
-							           
+   
 		                </script>
 		                
 
@@ -306,7 +219,8 @@
 	            	         dropZone.insertBefore(document.getElementById(data),ev.target);
 	            	        }
 	            	     	            		
-	            		</script>	            		
+	            		</script>	            	
+	            	
 
 
 <!-- 지도 -->

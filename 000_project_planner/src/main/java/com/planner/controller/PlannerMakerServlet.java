@@ -34,7 +34,7 @@ public class PlannerMakerServlet extends HttpServlet {
 		Cookie forOption = new Cookie("forOption",days);
 		forOption.setMaxAge(24*60*60); //하루 동안 유지함
 		response.addCookie(forOption);
-		response.sendRedirect(request.getContextPath()+"/views/planner/plannermap.jsp");
+		response.sendRedirect(request.getContextPath()+"/views/planner/plannerMain.jsp");
 		
 		//-----------------------------------------------------------------------------------
 		//충돌 테스트

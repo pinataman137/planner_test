@@ -8,6 +8,7 @@
 </head>
 <body>
 
+	
 	<form action="<%=request.getContextPath()%>/plannermaker.do" method="post">
 		<h2>여행 일자를 입력해주세요</h2>
 		<input type="text" name="days">일
