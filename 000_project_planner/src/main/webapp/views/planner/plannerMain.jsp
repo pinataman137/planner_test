@@ -85,7 +85,7 @@
 			                
 									<div id="detailPlan"></div>					
 									
-										    <div id="dropZone" ondragover="dragover_handler(event)" ondrop="drop_handler(event)">
+										    <div id="dropZone" >
  										    	<div id="p1" class="box_drag" draggable="true" >plan 1</div>
 										        <div id="p2" class="box_drag" draggable="true" >plan 2</div>
 										        <div id="p3" class="box_drag" draggable="true" >plan 3</div>
@@ -183,8 +183,17 @@
 											div.classList.add("box_drag");
 											div.setAttribute("draggable",true);
 											document.getElementById("dropZone").appendChild(div);
-											
 										}
+	            						
+										clearDragEvent();
+										addDragEvent();
+										
+	            					} else {
+	            						
+	            							
+	            						
+	            						
+	            						
 	            					}
 				            		
 				            						            		
@@ -226,18 +235,48 @@
 		                
 		                <script>
 	            		
+		                
+		                		function addDragEvent(){
+		                			
+		                			document.querySelector('#dropZone').addEventListener('dragover', dragover_handler);
+		                			 
+									document.querySelector('#dropZone').addEventListener('drop', drop_handler);
+									
+									const elements = document.querySelectorAll(".box_drag");
+			            	        elements.forEach(e => e.addEventListener("dragstart", dragstart_handler));
+		                		}
+		                		
+		                		
+		                		
+								function clearDragEvent(){
+		                			
+		                			document.querySelector('#dropZone').removeEventListener('dragover', dragover_handler);
+									document.querySelector('#dropZone').removeEventListener('drop', drop_handler);
+									const elements = document.querySelectorAll(".box_drag");
+			            	        elements.forEach(e => e.removeEventListener("dragstart", dragstart_handler));
+		                		}
+		                		
+		                		
+		                		window.addEventListener('DOMContentLoaded', () => {
+		                			addDragEvent();
+			            	    });
+		                		
+		                		
 		            			/* 드래그 앤 드롭 관련 */
 		            		    
 		            	        function dragstart_handler(ev) {
 		            	          // 데이터 전달 객체에 대상 요소의 id를 추가합니다.
 		            	          ev.dataTransfer.setData("text/plain", ev.target.id);
+		            	          ev.dataTransfer.idx = 1111111111;
+		            	          console.dir('///////////////dragstart_handler////////////////');
+			            	         console.dir(ev);
 		            	        }
 		            	      
-		            	        window.addEventListener('DOMContentLoaded', () => {
+		            	      /*   window.addEventListener('DOMContentLoaded', () => {
 		            	          // id를 통해 element를 가져옵니다.
 		            	          const elements = document.querySelectorAll(".box_drag");
 		            	          elements.forEach(e => e.addEventListener("dragstart", dragstart_handler));
-		            	        });
+		            	        }); */
 		
 		            	        function dragover_handler(ev) {
 		            	         ev.preventDefault();
@@ -246,6 +285,8 @@
 		
 		            	        function drop_handler(ev) {
 		            	         ev.preventDefault();
+		            	         console.dir('///////////////drop////////////////');
+		            	         console.dir(ev);
 		            	         const data = ev.dataTransfer.getData("text/plain");
 		            	         dropZone.insertBefore(document.getElementById(data),ev.target);
 		            	        }
@@ -258,7 +299,7 @@
 
 
 <!-- 지도 -->
- <%@include file="/views/planner/map.jsp" %>
+<%--   <%@include file="/views/planner/map.jsp" %>  --%>
 	
 </body>
 </html>
