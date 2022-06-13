@@ -12,9 +12,10 @@
 			
 			if(c.getName().equals("forOption")){
 				days = Integer.parseInt(c.getValue());
-				System.out.println("쿠키 가져왔어 : "+days);
+				
 			}			
-		}		
+		}
+		//System.out.println("쿠키 가져왔어 : "+days);
 	}
 	
 	int fromDate=0;
@@ -59,45 +60,49 @@
 	        <div id="left">
 	            <div id="myBox">
 	                <h1 id="yourPlanner">Your planner</h1>
-		                <div>            	
-		                			<!-- 0611 : select>option, change 時 데이터 제출하는 것 (0610버전 -> 0611버전 : 열람만 하기) -->
- 		                			<form action="<%=request.getContextPath()%>/temp.do" method="post" id="submitDayPlan">
-			                				<input type="hidden" id="dayPlan" name="dayPlan_" value="">
-		            		    			<input type="hidden" id="tempSave" name="tempSave_" value="">
-		            		    			<input type="hidden" id="newDay" name="newDay_" value="">
-				           			</form>   
-		                	
-		                	<!-- 사용자가 입력한 일수 만큼, select > option이 생성되도록 구현함 -->
-			                	<select id="daysOption" style="width:310px; margin-left:10px; font-size:20px;">
-			                	</select>			                			                
-		                </div>		                
-		            
-		                <div id="dayPlanner">
-		                	<div id="titleBox">
-		                		<h3 id="dayTitle"></h3>&nbsp<h4 style="margin-top:23px;">번째 날의 계획</h4>
-		                	</div>
 
-		                	
-		                <!-- 드래그 앤 드롭 (시험 예시) : 장소 관련 카드가 생성될 것임. 후에 구현할 것! innerText에는 장소名, value는 장소코드 등이 저장되겠다 -->
-		                
-								<div id="detailPlan"></div>					
-								
-									    <div id="dropZone" ondragover="dragover_handler(event)" ondrop="drop_handler(event)">
-									        <div id="p1" class="box_drag" draggable="true" style="background-color: white;" >plan 1</div>
-									        <div id="p2" class="box_drag" draggable="true" style="background-color: white; ">plan 2</div>
-									        <div id="p3" class="box_drag" draggable="true" style="background-color: white; ">plan 3</div>
-									        <div id="p4" class="box_drag" draggable="true" style="background-color: white; ">plan 4</div>
-									        <div id="p5" class="box_drag" draggable="true" style="background-color: white; ">plan 5</div>
-									        <div id="p6" class="box_drag" draggable="true" style="background-color: white; ">plan 6</div>
-									        <div id="p7" class="box_drag" draggable="true" style="background-color: white; ">plan 7</div>
-									        <!-- <div></div> -->
-									    </div>              	
-				                </div>
-				                
-				                <div id="buttons">
-				                	<button id="save">작성 완료</button>
-				                	<button id="delete" onclick="deleteSchedule();">작성 취소</button>
-				                </div>
+			                <div>            	
+			                			<!-- 0611 : select>option, change 時 데이터 제출하는 것 (0610버전 -> 0611버전 : 열람만 하기) -->
+	 		                			<form action="<%=request.getContextPath()%>/temp.do" method="post" id="submitDayPlan">
+				                				<input type="hidden" id="dayPlan" name="dayPlan_" value="">
+			            		    			<input type="hidden" id="tempSave" name="tempSave_" value="">
+			            		    			<input type="hidden" id="newDay" name="newDay_" value="">
+					           			</form>   
+			                	
+			                	<!-- 사용자가 입력한 일수 만큼, select > option이 생성되도록 구현함 -->
+				                	<select id="daysOption" style="width:310px; margin-left:10px; font-size:20px;">
+				                	</select>			                			                
+			                </div>		                
+			            
+			            	<div id="plannerBox">
+			                <div id="dayPlanner">
+			                	<div id="titleBox">
+			                		<h3 id="dayTitle"></h3>&nbsp<h4 style="margin-top:23px;">번째 날의 계획</h4>
+			                	</div>
+	
+			                	
+			                <!-- 드래그 앤 드롭 (시험 예시) : 장소 관련 카드가 생성될 것임. 후에 구현할 것! innerText에는 장소名, value는 장소코드 등이 저장되겠다 -->
+			                
+									<div id="detailPlan"></div>					
+									
+										    <div id="dropZone" ondragover="dragover_handler(event)" ondrop="drop_handler(event)">
+ 										    	<div id="p1" class="box_drag" draggable="true" >plan 1</div>
+										        <div id="p2" class="box_drag" draggable="true" >plan 2</div>
+										        <div id="p3" class="box_drag" draggable="true" >plan 3</div>
+										        <div id="p4" class="box_drag" draggable="true" >plan 4</div>
+										        <div id="p5" class="box_drag" draggable="true" >plan 5</div>
+										        <div id="p6" class="box_drag" draggable="true" >plan 6</div>
+										        <div id="p7" class="box_drag" draggable="true" >plan 7</div> 
+										        <!-- <div></div> -->
+										    </div>              	
+					                </div>
+					                
+					                <div id="buttons">
+					                	<button id="save">작성 완료</button>
+					                	<button id="delete" onclick="deleteSchedule();">작성 취소</button>
+					                </div>
+					                
+					        </div>
 	            		</div>
 	         </div>
 	    </div>
@@ -125,106 +130,135 @@
 							//document.getElementById("dayTitle").innerText= "Day "+thisDay+"의 여행계획";
 							//document.getElementById("dayTitle").innerText= thisDay;
 							document.getElementById("dayTitle").innerText= <%=fromDate!=0?fromDate:1%>
-	            			
+							
+							
+	            				//0613------------------------------------------------------------------
+	            				//1. select 前/後 일자 정보 가져오기
+	            				
+	            				let preCho = "";
+	            				let nowCho = "";
+	            				
+	            				daysOption.addEventListener("focus", e=>{
+	            					daysOption.blur();
+	            					preCho = daysOption.value;
+	            					
+	            				});
 							
 														
 	            				daysOption.addEventListener("change",e=>{
 	            					
-			            					            				
-				            		/* (0611) option변경할 때마다, 일정 카드가 "DB"에 저장되도록 구현 
-				            		   (0613) localStorage에 저장하는 안으로 수정
-				            		
-				            		*/
-				            		
+	            					nowCho = daysOption.value;
+	            					console.log("이전", preCho);
+	            					console.log("지금", nowCho);
+	            					
+	            					
+	            						
 				            		const cards = document.querySelectorAll("div#dropZone>div"); //장소 관련 카드들 불러오기
 				            		console.log(cards);
 				            		
-				            		
-
 				            		//0613---------------------------------------------------------------
-				            		//임시저장 개념이므로, DB 대신 localStorage로 변경함
+				            		//임시저장 개념이므로, 저장소를 DB 대신 localStorage로 변경함
 				            		
-
+	            					//console.log("현재 저장된 일정이 있는지", localStorage.getItem(nowCho));
+	            					const savedPlanTemp = localStorage.getItem(nowCho);
+	            					if(savedPlanTemp!=null){
+	            						const savedPlan = savedPlanTemp.split(",");
+	            						console.log("배열로 받아온",nowCho,"의 일정",savedPlan);
+	            						
+	            						
+	            						//작성 기록이 있다면, 카드를 새로 생성해서 출력해주기
+	            						let cntId = 1;
+	            						document.getElementById("dropZone").innerHTML=""; //계속 appendChild하면 누적되므로, 먼저 비워주기
+	            						
+										for(let i=0;i<savedPlan.length;i++){
+											//cards.innerText = savedPlan[i];
+																					
+											const div = document.createElement("div");											
+											const num = savedPlan[i].slice(-1);
+											console.log("숫자 확인 : ",num);
+											
+ 											div.id="p"+num;
+											div.innerHTML = savedPlan[i];
+											//div.className= "box_drag";
+											div.classList.add("box_drag");
+											div.setAttribute("draggable",true);
+											document.getElementById("dropZone").appendChild(div);
+											
+										}
+	            					}
 				            		
+				            						            		
 				            		//장소 방문 순서 편집 관련 로직---------------------------------------------
-				            		//select > option이 바뀜 + 카드 순서가 재배열됨 + option이 또 바뀜, 이면 submit하도록 구현할 수 있을까?
 				            		
-				            		//--------------------------------------------------------------------
 					            		let arr=[]; //"카드"의 innerText정보는 배열에 저장하기
 					            		console.log(arr);
 					            		
-					            		for(let i=0;i<cards.length;i++){
-					            			
-					            			arr[i] = cards[i].innerText;
-					            			
-					            		}
-					            		
+					            		for(let i=0;i<cards.length;i++){					            			
+					            			arr[i] = cards[i].innerText;					            			
+					            		}					            		
 					            		console.log(arr);
-				            		
-				            		
-				            		
-				            		let tempString = arr.join(","); //구분자(콤마)를 기준으로, 배열 內 인덱스 정보들을 하나의 문자열로 변환함
-				            		console.log(tempString); //문자열로 잘 변환됐는지 확인
-				            		
-				            		document.getElementById("tempSave").value=tempString;
-				            		document.getElementById("dayPlan").value=document.getElementById("dayTitle").innerText;
-				            		
-				            		console.log("플랜을 작성한 날은 : ", document.getElementById("dayTitle").innerText);
-				            		console.log("일일 플랜 : ", document.getElementById("tempSave").value);
-				            		
-
+				            						            						            		
+					            		let tempString = arr.join(","); //구분자(콤마)를 기준으로, 배열 內 인덱스 정보들을 하나의 문자열로 변환함
+					            		console.log(tempString); //문자열로 잘 변환됐는지 확인				           
+				        
 									//이전 것을 저장한 이후에
 									//1. 일자 바꾸기
-		            				let newDay = e.target.value; //바꾼 일자 받아오기
-		            				document.getElementById("newDay").value = newDay;
-		            				//2. 새로운 일자가 반영된 타이틀 출력하기           				
-			            			//document.getElementById("dayTitle").innerText= "Day "+newDay+"의 여행계획";
-			            			document.getElementById("dayTitle").innerText= newDay;
+			            			document.getElementById("dayTitle").innerText= nowCho;
 			            			
-			            			
-			            			localStorage.setItem(thisDay,arr);
+			            			//select 변경 時, 편집한 카드 배열 내용을 localStorage에 해당 일자의 일정을 저장함
+			            			localStorage.setItem(preCho,arr);
 			            			
 			            			//if 문으로 선택 값에 따라 getItem하면 될 거 같다... null 등이 아니면 get이후에 set하면 되지 않을까?
+			            					
+			            			console.log("확인 : ",localStorage.getItem(preCho));
+			            			if(localStorage.getItem(preCho)!=null){
+			            				console.log("비어있지는 않아");
+			            			}
 				            		
 	            			});
+
+	            				
+
 			            			
    
 		                </script>
 		                
+		                
+		                <script>
+	            		
+		            			/* 드래그 앤 드롭 관련 */
+		            		    
+		            	        function dragstart_handler(ev) {
+		            	          // 데이터 전달 객체에 대상 요소의 id를 추가합니다.
+		            	          ev.dataTransfer.setData("text/plain", ev.target.id);
+		            	        }
+		            	      
+		            	        window.addEventListener('DOMContentLoaded', () => {
+		            	          // id를 통해 element를 가져옵니다.
+		            	          const elements = document.querySelectorAll(".box_drag");
+		            	          elements.forEach(e => e.addEventListener("dragstart", dragstart_handler));
+		            	        });
+		
+		            	        function dragover_handler(ev) {
+		            	         ev.preventDefault();
+		            	         ev.dataTransfer.dropEffect = "move";
+		            	        }
+		
+		            	        function drop_handler(ev) {
+		            	         ev.preventDefault();
+		            	         const data = ev.dataTransfer.getData("text/plain");
+		            	         dropZone.insertBefore(document.getElementById(data),ev.target);
+		            	        }
+	            	     	            		
+	            		</script>	
 
      		
-	            		<script>
-	            		
-	            			/* 드래그 앤 드롭 관련 */
-            		    
-	            	        function dragstart_handler(ev) {
-	            	          // 데이터 전달 객체에 대상 요소의 id를 추가합니다.
-	            	          ev.dataTransfer.setData("text/plain", ev.target.id);
-	            	        }
-	            	      
-	            	        window.addEventListener('DOMContentLoaded', () => {
-	            	          // id를 통해 element를 가져옵니다.
-	            	          const elements = document.querySelectorAll(".box_drag");
-	            	          elements.forEach(e => e.addEventListener("dragstart", dragstart_handler));
-	            	        });
-
-	            	        function dragover_handler(ev) {
-	            	         ev.preventDefault();
-	            	         ev.dataTransfer.dropEffect = "move";
-	            	        }
-
-	            	        function drop_handler(ev) {
-	            	         ev.preventDefault();
-	            	         const data = ev.dataTransfer.getData("text/plain");
-	            	         dropZone.insertBefore(document.getElementById(data),ev.target);
-	            	        }
-	            	     	            		
-	            		</script>	            	
+            	
 	            	
 
 
 <!-- 지도 -->
-<%-- <%@include file="/views/planner/map.jsp" %>	 --%>
+ <%@include file="/views/planner/map.jsp" %>
 	
 </body>
 </html>
