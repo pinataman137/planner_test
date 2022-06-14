@@ -350,8 +350,8 @@
 
 <!-- 지도 -->
 <%--   <%@include file="/views/planner/map.jsp" %>  --%>
-<%--     <%@include file="/views/planner/mapTest2.jsp" %>   --%>
-<!-- 		<div id="map"></div> -->
+     <%@include file="/views/planner/mapTest2.jsp" %>		
+<!-- <div id="map"></div>  -->
 	
 </body>
 </html>

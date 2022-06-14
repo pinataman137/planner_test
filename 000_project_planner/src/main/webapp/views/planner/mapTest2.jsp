@@ -18,18 +18,20 @@
     <div id="map"></div>
 
     <div id="menu_wrap" class="bg_white">
-        <div class="option">
-            <div>
-            	<h1 style="text-align:left;padding:10px;margin-bottom:0px;margin-left:5px;">SEARCH</h1>
-                <form onsubmit="searchPlaces(); return false;">
-                    	<input type="text" id="keyword" size="40" placeholder="검색어를 입력하세요"> 
-                    <button id="searchBtn" type="submit">검색하기</button> 
-                </form>
-            </div>
-        </div>
-        <hr id="listLine">
-        <ul id="placesList"></ul>
-        <div id="pagination"></div>           
+<!--     	<div id="searchbox"> -->
+		        <div class="option">
+		            <div>
+		            	<h1 id="listTitle" style="text-align:left;padding:10px;margin-bottom:0px;margin-left:5px;">SEARCH</h1>
+		                <form onsubmit="searchPlaces(); return false;" id="searchBox">
+		                    	<input type="text" value="소명여고" id="keyword" size="40" placeholder="검색어를 입력하세요"> 
+		                    	<button id="searchBtn" type="submit">검색하기</button> 
+		                </form>
+		            </div>
+		        </div>
+		        <hr id="listLine">
+		        <ul id="placesList"></ul>
+		        <div id="pagination"></div>
+<!--         </div>    -->        
     </div>
 </div>
 <button id="likesBtn" style="width:100px;">좋아요</button>
