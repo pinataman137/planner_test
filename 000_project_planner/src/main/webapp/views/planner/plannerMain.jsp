@@ -38,6 +38,9 @@
 		System.out.println("저장한 일자의 일정 : "+savedPlan);
 	} 
 	//---------------------------------------------------------
+	//0614 > "새로고침"할 경우, "localStorage"의 저장 데이터는 유지되나, 
+	//화면 상에서는 1번째 날의 계획이 리셋됨... 그리고 화면상에서 데이터가 리셋된 채로 option값을 이동하게 되면 실제 localStorage값도 리셋됨! 
+	
 	
 	
 %>
@@ -132,6 +135,41 @@
 							document.getElementById("dayTitle").innerText= <%=fromDate!=0?fromDate:1%>
 							
 							
+							
+								//0614-----------------------------------------------------------------
+								//1. 1일차의 데이터를 localStorage에 저장했으나 "새로고침"할 경우 화면상 카드는 리셋됨을 확인함!
+								const dayOnePlan = localStorage.getItem(1);
+								
+								if(dayOnePlan!=null&&thisDay==1){
+									console.log("1일차 데이터 있어", dayOnePlan);
+									
+									//데이터가 있다면, 새로고침 시에도 해당 장소 데이터가 출력되도록 로직 구현하기
+									const dayOnePlanArr = dayOnePlan.split(",");
+									console.log("배열로 바꾸면? ", dayOnePlanArr);
+									
+									
+            						document.getElementById("dropZone").innerHTML=""; //계속 appendChild하면 누적되므로, 먼저 비워주기
+            						
+									for(let i=0;i<dayOnePlanArr.length;i++){
+										//cards.innerText = savedPlan[i];
+																				
+										const div = document.createElement("div");											
+										const num = dayOnePlanArr[i].slice(-1);
+										//console.log("숫자 확인 : ",num);
+										
+										div.id="p"+num;
+										div.innerHTML = dayOnePlanArr[i];
+										div.classList.add("box_drag");
+										div.setAttribute("draggable",true);
+										document.getElementById("dropZone").appendChild(div);
+									}
+            						
+									//clearDragEvent();
+									//addDragEvent();
+									
+					
+								}
+							
 	            				//0613------------------------------------------------------------------
 	            				//1. select 前/後 일자 정보 가져오기
 	            				
@@ -148,8 +186,9 @@
 	            				daysOption.addEventListener("change",e=>{
 	            					
 	            					nowCho = daysOption.value;
-	            					console.log("이전", preCho);
-	            					console.log("지금", nowCho);
+	            					console.log("이전", preCho); //select창에 출력된 "일자" 저장하기
+	            					console.log("지금", nowCho); //option을 선택함으로써 "변경된 일자"저장하기
+	            					//ex. 1일자->2일자 변경 시, preCho는 1, nowCho는 2가 됨
 	            					
 	            					
 	            						
@@ -162,11 +201,12 @@
 	            					//console.log("현재 저장된 일정이 있는지", localStorage.getItem(nowCho));
 	            					const savedPlanTemp = localStorage.getItem(nowCho);
 	            					console.log("체크!!!!!!!!!!!!",savedPlanTemp);
+	            					
 	            					if(savedPlanTemp!=null){
+	            						
 	            						const savedPlan = savedPlanTemp.split(",");
 	            						console.log("배열로 받아온",nowCho,"의 일정",savedPlan);
-	            						
-	            						
+	            							            						
 	            						//작성 기록이 있다면, 카드를 새로 생성해서 출력해주기
 	            						//let cntId = 1;
 	            						document.getElementById("dropZone").innerHTML=""; //계속 appendChild하면 누적되므로, 먼저 비워주기
@@ -180,7 +220,6 @@
 											
  											div.id="p"+num;
 											div.innerHTML = savedPlan[i];
-											//div.className= "box_drag";
 											div.classList.add("box_drag");
 											div.setAttribute("draggable",true);
 											document.getElementById("dropZone").appendChild(div);
@@ -191,6 +230,7 @@
 										
 	            					} else {
 	            						
+	            						//0614) 여기부터 다시 시작! -------------------------------------------------------
 	            						//선택한 일자로 저장된 일정이 없으면, 디폴트로 출력하기
 	            						//document.getElementById("dropZone").innerHTML="";
 	            						let cnt = 1;
@@ -231,16 +271,14 @@
 			            			}
 				            		
 	            			});
-
-	            				
-
-			            			
-   
+ 
 		                </script>
 		                
 		                
+		                
+		                
 		                <script>
-	            		
+	            		//드래그 앤 드롭 이벤트 관련
 		                
 		                		function addDragEvent(){
 		                			
@@ -300,6 +338,7 @@
 		            	         // console.log(divItems.length);
 		            	         //console.dir(ev.target.nextElementSibling);
 		            	         
+		            	         //태그 상 마지막 노드에 카드를 추가하고자 할 때, "insertBefore"함수 구현하기
 		            	         if(ev.target.nextElementSibling!=null){
 		            	         	dropZone.insertBefore(document.getElementById(data),ev.target);
 		            	         } else dropZone.insertBefore(document.getElementById(data), null);
@@ -308,13 +347,11 @@
 	            	     	            		
 	            		</script>	
 
-     		
-            	
-	            	
-
 
 <!-- 지도 -->
 <%--   <%@include file="/views/planner/map.jsp" %>  --%>
+<%--     <%@include file="/views/planner/mapTest2.jsp" %>   --%>
+<!-- 		<div id="map"></div> -->
 	
 </body>
 </html>
