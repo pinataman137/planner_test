@@ -36,16 +36,17 @@
 </div>
 <button id="likesBtn" style="width:100px;">좋아요</button>
     
-    
- <!--     <div id="map" class="z2"></div>  -->
-		
-		
 
 	<!-- 지도 관련 스크립트 -->
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a918dc059c0c7fe988d04540ed91f259&libraries=services"></script>
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a918dc059c0c7fe988d04540ed91f259&libraries=LIBRARY"></script>
 	
 <script>
+
+//const searchPlaces = document.getElementById("searchPlaces");
+
+
+
 //마커를 담을 배열입니다
 var markers = [];
 
@@ -57,6 +58,12 @@ var mapContainer = document.getElementById('map'), // 지도를 표시할 div
 
 // 지도를 생성합니다    
 var map = new kakao.maps.Map(mapContainer, mapOption); 
+
+const likesBtn = document.getElementById("likesBtn");
+map.addControl(likesBtn, kakao.maps.ControlPosition.LEFT);
+
+
+ map.relayout();
 
 // 장소 검색 객체를 생성합니다
 var ps = new kakao.maps.services.Places();  
@@ -104,6 +111,35 @@ function placesSearchCB(data, status, pagination) {
 
     }
 }
+//------------------------------------------------------------------------
+
+
+//마커 위에 커스텀오버레이를 표시합니다
+//마커를 중심으로 커스텀 오버레이를 표시하기위해 CSS를 이용해 위치를 설정했습니다
+
+var customContent = '<div class="wrap">' + 
+            '    <div class="info">' + 
+            '        <div class="title">' + 
+            '            여기 괜찮아요?' + 
+            '            <div class="close" onclick="closeOverlay()" title="닫기"></div>' + 
+            '        </div>' + 
+            '        <div class="body">' + 
+            '            <div class="desc">' + 
+            '                <div class="ellipsis">장소를 플랜에 추가할까요?</div>' +
+    '               		 <button id="addBtn" onclick="addList();" class="addToList" style="font-size:12px;">좋아요</button>' + 
+            '        </div>' + 
+            '    </div>' +    
+            '</div>';
+ 
+function addList(marker){
+	//alert("하이!"); //여기서부터 구현하기---------------- 마커의 정보를 가져올 수 있나?
+	//console.log(marker);
+}
+            
+
+            
+            
+//------------------------------------------------------------------------
 
 // 검색 결과 목록과 마커를 표출하는 함수입니다
 function displayPlaces(places) {
@@ -142,6 +178,40 @@ function displayPlaces(places) {
             kakao.maps.event.addListener(marker, 'mouseout', function() {
                 infowindow.close();
             });
+            
+          	//마커 클릭이벤트 만들기~ -----------------------------------------------------
+    	
+			var overlay = new kakao.maps.CustomOverlay({
+			    content: customContent,
+			    map: map,
+			    position: marker.getPosition()       
+			});
+          	
+          		overlay.setMap(null);
+          	
+	
+			//커스텀 오버레이를 만듦!		
+			let flag = true;
+			kakao.maps.event.addListener(marker, 'click', function() {
+				
+				
+
+				
+				if(flag==true){
+				overlay.setMap(map);	
+				let lat = marker.getPosition().getLat(); //위도
+				console.log(lat);
+				let lng = marker.getPosition().getLng();
+				console.log("위도 : ",lat,"경도",lng);
+				flag = false;
+				
+				} else {
+					overlay.setMap(null);
+					flag=true;
+				}
+			});
+
+          	//------------------------------------------------------------------------
 
             itemEl.onmouseover =  function () {
                 displayInfowindow(marker, title);
@@ -153,6 +223,7 @@ function displayPlaces(places) {
         })(marker, places[i].place_name);
 
         fragment.appendChild(itemEl);
+    
     }
 
     // 검색결과 항목들을 검색결과 목록 Element에 추가합니다
@@ -161,6 +232,10 @@ function displayPlaces(places) {
 
     // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
     map.setBounds(bounds);
+    
+
+    
+    
 }
 
 // 검색결과 항목을 Element로 반환하는 함수입니다
@@ -249,7 +324,7 @@ function displayPagination(pagination) {
 
 // 검색결과 목록 또는 마커를 클릭했을 때 호출되는 함수입니다
 // 인포윈도우에 장소명을 표시합니다
-function displayInfowindow(marker, title) {
+ function displayInfowindow(marker, title) {
     var content = '<div style="padding:5px;z-index:1;">' + title + '</div>';
 
     infowindow.setContent(content);
@@ -262,4 +337,31 @@ function removeAllChildNods(el) {
         el.removeChild (el.lastChild);
     }
 }
+
+
+ 
+ 
+ 
+ //----------------------------------------------------------------------------
+ //마커 클릭 관련
+ // 마커에 커서가 오버됐을 때 마커 위에 표시할 인포윈도우를 생성합니다
+ 
+ 
+ //console.log("마커 확인", markers);
+ 
+ 
+/* var iwContent = '<div style="padding:5px;">Hello World!</div>'; // 인포윈도우에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
+
+// 인포윈도우를 생성합니다
+var infowindow = new kakao.maps.InfoWindow({
+    content : iwContent
+});
+ 
+ kakao.maps.event.addListener(marker, 'mouseover', function() {
+  // 마커에 마우스오버 이벤트가 발생하면 인포윈도우를 마커위에 표시합니다
+    infowindow.open(map, marker);
+}); */
+
+ 
+ 
 </script>
