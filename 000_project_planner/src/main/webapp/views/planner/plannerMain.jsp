@@ -252,6 +252,7 @@
 	            					} else {
 	            						
 	            						//0614) 여기부터 다시 시작! -------------------------------------------------------
+										//선택 일자에 저장 이력이 없을 경우, 기본 세팅 값이 출력되도록 구현함	            						
 	            						/*
 	            						let cnt = 1;
 	            						cards.forEach(e=>{	            					
@@ -311,11 +312,7 @@
 			            					
 			            			console.log("현재 편집한 일정이 잘 저장됐는지 확인 : "
 			            					    ,JSON.parse(localStorage.getItem(preCho)));
-			            
-			            			if(localStorage.getItem(preCho)!=null){
-			            				console.log("비어있지는 않아");
-			            			}
-				            		
+
 	            			});
  
 		                </script>
