@@ -18,6 +18,9 @@
 		//System.out.println("쿠키 가져왔어 : "+days);
 	}
 	
+	
+	
+	//localStorage 사용 前 -------------------------------------
 	int fromDate=0;
 	String fromThisDay = (String)request.getAttribute("fromThisDay");
 	if(fromThisDay!=null){
@@ -52,6 +55,8 @@
 <title>planner</title>
 
 <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/style.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@1,800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500&display=swap" rel="stylesheet">
 <script src="http://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 </head>
@@ -62,7 +67,7 @@
     <div id="container">
 	        <div id="left">
 	            <div id="myBox">
-	                <h1 id="yourPlanner">Your planner</h1>
+	                <h1 id="yourPlanner" style="font-family:Rubik;">Your planner</h1>
 
 			                <div>            	
 			                			<!-- 0611 : select>option, change 時 데이터 제출하는 것 (0610버전 -> 0611버전 : 열람만 하기) -->
@@ -80,8 +85,9 @@
 			            	<div id="plannerBox">
 			                <div id="dayPlanner">
 			                	<div id="titleBox">
-			                		<h3 id="dayTitle"></h3>&nbsp<h4 style="margin-top:23px;">번째 날의 계획</h4>
+			                		<h3 id="dayTitle" style=""></h3>&nbsp<h4 style="margin-top:23px;font-family:Noto Sans KR">번째 날의 계획</h4>
 			                	</div>
+			                	
 	
 			                	
 			                <!-- 드래그 앤 드롭 (시험 예시) : 장소 관련 카드가 생성될 것임. 후에 구현할 것! innerText에는 장소名, value는 장소코드 등이 저장되겠다 -->
@@ -99,7 +105,6 @@
 										        <!-- <div></div> -->
 										    </div>              	
 					                </div>
-					                
 					                <div id="buttons">
 					                	<button id="save">작성 완료</button>
 					                	<button id="delete" onclick="deleteSchedule();">작성 취소</button>
@@ -109,8 +114,10 @@
 	            		</div>
 	         </div>
 	    </div>
-	            		
+     <%@include file="/views/planner/mapTest2.jsp" %>		            		
 	            		<script>
+            		
+	            		
 		                /* 여행 일수 기준 select > option생성하기 */
 		                	const daysOption = document.getElementById("daysOption");
 		                	const inputDay = <%=days%>;
@@ -350,7 +357,7 @@
 
 <!-- 지도 -->
 <%--   <%@include file="/views/planner/map.jsp" %>  --%>
-     <%@include file="/views/planner/mapTest2.jsp" %>		
+	
 <!-- <div id="map"></div>  -->
 	
 </body>

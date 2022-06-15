@@ -23,7 +23,7 @@
 		            <div>
 		            	<h1 id="listTitle" style="text-align:left;padding:10px;margin-bottom:0px;margin-left:5px;">SEARCH</h1>
 		                <form onsubmit="searchPlaces(); return false;" id="searchBox">
-		                    	<input type="text" value="소명여고" id="keyword" size="40" placeholder="검색어를 입력하세요"> 
+		                    	<input type="text" value="에버랜드" id="keyword" size="40" placeholder="검색어를 입력하세요"> 
 		                    	<button id="searchBtn" type="submit">검색하기</button> 
 		                </form>
 		            </div>
@@ -118,26 +118,105 @@ function placesSearchCB(data, status, pagination) {
 //마커를 중심으로 커스텀 오버레이를 표시하기위해 CSS를 이용해 위치를 설정했습니다
 
 var customContent = '<div class="wrap">' + 
-            '    <div class="info">' + 
+            '    	 <div class="info">' + 
             '        <div class="title">' + 
             '            여기 괜찮아요?' + 
             '            <div class="close" onclick="closeOverlay()" title="닫기"></div>' + 
             '        </div>' + 
             '        <div class="body">' + 
             '            <div class="desc">' + 
-            '                <div class="ellipsis">장소를 플랜에 추가할까요?</div>' +
-    '               		 <button id="addBtn" onclick="addList();" class="addToList" style="font-size:12px;">좋아요</button>' + 
-            '        </div>' + 
+            '                <div class="ellipsis" style="margin-bottom:10px;font-size:50">장소를 플랜에 추가할까요?</div>' +
+            				 '<input type="text" placeholder="메모를 작성해주세요">'+
+    '               		 <button id="addBtn" onclick="addList();" class="addToList" style="font-size:12px;margin-left:20px;width:50px;">좋아요</button>' + 
+            '        	 </div>' + 
             '    </div>' +    
-            '</div>';
+            '</div>'+
+            '<div style="display:none", id="hiddenLat"></div>' //마커의 위도
+            +'<div style="display:none", id="hiddenLng"></div>' //마커의 경도
+            +'<div style="display:none", id="hiddenTitle"></div>'; //마커의 장소명
  
-function addList(marker){
-	//alert("하이!"); //여기서부터 구현하기---------------- 마커의 정보를 가져올 수 있나?
-	//console.log(marker);
-}
-            
+function addList(){ //특정 장소를 사용자의 플랜 리스트에 추가하는 인터페이스
+	clearDragEvent();
+	       	
+	const lat = document.getElementById("hiddenLat").innerText;
+	const lng = document.getElementById("hiddenLng").innerText;
+ 	const placeTitle = document.getElementById("hiddenTitle").innerText;
+ 	
+	console.log("위도 : ",lat,"경도, ",lng,"타이틀",placeTitle);
 
-            
+	//장소 카드 생성해, 플랜 리스트에 추가하기 -----------------------------------
+	const dropZone = document.getElementById("dropZone");
+	
+	const addPlan = document.createElement("div"); //div생성하기
+	addPlan.classList.add("box_drag");
+	addPlan.setAttribute("draggable",true);
+	addPlan.innerText = placeTitle;
+
+	//index를 식별하기 위해, 현재 dropZone에 자식 태그들이 몇 개 있는지 확인하기	
+	
+	const cards = document.querySelectorAll("div#dropZone div");
+	console.log("현재 카드 개수 : ",cards.length);
+	let tempNo = cards.length+1;
+	addPlan.id="p"+tempNo; //☆ addPlan > id값 다시 정해야 함...
+	dropZone.insertAdjacentElement("beforeend",addPlan);
+	addDragEvent();
+	
+	console.log(addPlan);
+	
+	choTest(addPlan);
+} 
+
+
+
+/* 	//장소카드 더블 클릭 시, 삭제되도록 로직 구현하기
+	const removeCards = document.querySelectorAll("div#dropZone div");
+
+	console.log("존재하긴 하냐고 : ",removeCards);
+	
+	removeCards.forEach(e=>{
+	
+		console.log("뭔데? : ",e);
+		e.addEventListener("dblclick",e=>{
+			alert("하이!");
+		}); 
+		choTest(e);
+		console.log("등록 완료!");
+	
+	}); */
+	
+	
+	//window.onload()함수로 등록하면 된다고 함...
+    function choTest(e){
+    	let dropZone = document.getElementById("dropZone");   	
+    	e.addEventListener("dblclick",e=>{   		
+    		alert("삭제!");
+    		dropZone.removeChild(e.target);   		
+    	});
+    };
+    
+    (()=>{
+    	
+    	
+    	alert("하이!")
+    	//장소카드 더블 클릭 시, 삭제되도록 로직 구현하기☆ (기존 카드는 이벤트 등록이 안 되는데 왤까?)
+    	const removeCards = document.querySelectorAll("div#dropZone div");
+
+    	console.log("존재하긴 하냐고 : ",removeCards);
+    	
+    	removeCards.forEach(e=>{
+    	
+    		console.log("뭔데? : ",e);
+    		e.addEventListener("dblclick",e=>{
+    			alert("하이!");
+    		}); 
+    		choTest(e);
+    		console.log("등록 완료!");
+    	
+    	});
+    
+      
+    })();
+    
             
 //------------------------------------------------------------------------
 
@@ -173,6 +252,7 @@ function displayPlaces(places) {
         (function(marker, title) {
             kakao.maps.event.addListener(marker, 'mouseover', function() {
                 displayInfowindow(marker, title);
+
             });
 
             kakao.maps.event.addListener(marker, 'mouseout', function() {
@@ -194,15 +274,23 @@ function displayPlaces(places) {
 			let flag = true;
 			kakao.maps.event.addListener(marker, 'click', function() {
 				
-				
-
-				
+								
 				if(flag==true){
-				overlay.setMap(map);	
+				overlay.setMap(map);
+				
 				let lat = marker.getPosition().getLat(); //위도
-				console.log(lat);
-				let lng = marker.getPosition().getLng();
-				console.log("위도 : ",lat,"경도",lng);
+				let lng = marker.getPosition().getLng(); //경도
+				
+				document.getElementById("hiddenLat").innerText=lat;
+				document.getElementById("hiddenLng").innerText=lng;
+				
+				
+				//해당 마커의 장소명 가져오기--------------------------------------------
+				//console.log(places[i].address_name);
+				//console.log(title);
+				document.getElementById("hiddenTitle").innerText=title;
+				
+				
 				flag = false;
 				
 				} else {
@@ -237,6 +325,7 @@ function displayPlaces(places) {
     
     
 }
+
 
 // 검색결과 항목을 Element로 반환하는 함수입니다
 function getListItem(index, places) {
@@ -329,6 +418,8 @@ function displayPagination(pagination) {
 
     infowindow.setContent(content);
     infowindow.open(map, marker);
+
+    
 }
 
  // 검색결과 목록의 자식 Element를 제거하는 함수입니다
