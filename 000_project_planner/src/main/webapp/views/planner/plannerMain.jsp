@@ -95,13 +95,13 @@
 									<div id="detailPlan"></div>					
 									
 										    <div id="dropZone" >
- 										    	<div id="p1" class="box_drag" draggable="true" >plan 1</div>
+<!--  										    <div id="p1" class="box_drag" draggable="true" >plan 1</div>
 										        <div id="p2" class="box_drag" draggable="true" >plan 2</div>
 										        <div id="p3" class="box_drag" draggable="true" >plan 3</div>
 										        <div id="p4" class="box_drag" draggable="true" >plan 4</div>
 										        <div id="p5" class="box_drag" draggable="true" >plan 5</div>
 										        <div id="p6" class="box_drag" draggable="true" >plan 6</div>
-										        <div id="p7" class="box_drag" draggable="true" >plan 7</div> 
+										        <div id="p7" class="box_drag" draggable="true" >plan 7</div>  -->
 										        <!-- <div></div> -->
 										    </div>              	
 					                </div>
@@ -145,30 +145,38 @@
 							
 								//0614-----------------------------------------------------------------
 								//1. 1일차의 데이터를 localStorage에 저장했으나 "새로고침"할 경우 화면상 카드는 리셋됨을 확인함!
-								const dayOnePlan = localStorage.getItem(1);
+								//0615-----------------------------------------------------------------
+								//2. 장소 정보를 객체로서 저장함! 객체의 정보를 재가공하지 않고, 적절히 꺼내 쓸 수 있도록 구현하기
+								const dayOnePlan = JSON.parse(localStorage.getItem(1));
+
+								//console.log(dayOnePlan[0].id);
 								
 								if(dayOnePlan!=null&&thisDay==1){
 									console.log("1일차 데이터 있어", dayOnePlan);
 									
 									//데이터가 있다면, 새로고침 시에도 해당 장소 데이터가 출력되도록 로직 구현하기
-									const dayOnePlanArr = dayOnePlan.split(",");
-									console.log("배열로 바꾸면? ", dayOnePlanArr);
+									//const dayOnePlanArr = dayOnePlan.split(",");
+									//console.log("배열로 바꾸면? ", dayOnePlanArr);
 									
 									
             						document.getElementById("dropZone").innerHTML=""; //계속 appendChild하면 누적되므로, 먼저 비워주기
             						
-									for(let i=0;i<dayOnePlanArr.length;i++){
-										//cards.innerText = savedPlan[i];
-																				
-										const div = document.createElement("div");											
-										const num = dayOnePlanArr[i].slice(-1);
-										//console.log("숫자 확인 : ",num);
+									for(let i=0;i<dayOnePlan.length;i++){				
+									
+ 										const div = document.createElement("div"); //태그 만들기
 										
-										div.id="p"+num;
-										div.innerHTML = dayOnePlanArr[i];
+										div.setAttribute("id", dayOnePlan[i].id);
+										div.setAttribute("placeTitle", dayOnePlan[i].title);
+										div.setAttribute("latitude", dayOnePlan[i].latitude);
+										div.setAttribute("longitude", dayOnePlan[i].longitude);
+										div.setAttribute("memo", dayOnePlan[i].memo);
+										
+										div.innerText = dayOnePlan[i].title;
 										div.classList.add("box_drag");
 										div.setAttribute("draggable",true);
-										document.getElementById("dropZone").appendChild(div);
+										document.getElementById("dropZone").appendChild(div); 
+																			
+										
 									}
             						
 									//clearDragEvent();
@@ -200,18 +208,19 @@
 	            					
 	            						
 				            		const cards = document.querySelectorAll("div#dropZone>div"); //장소 관련 카드들 불러오기
-				            		console.log(cards);
+				            		console.log("현재 dropZone에 추가된 카드 : (저장 이력이 없는 경우에는 없을 수도 있음!)",cards);
 				            		
+				            		//0615 > 디폴트 카드 삭제. 저장된 일정이 없다면, 카드를 출력하지 않음. 
 				            		//0613---------------------------------------------------------------
 				            		//임시저장 개념이므로, 저장소를 DB 대신 localStorage로 변경함
 				            		
 	            					//console.log("현재 저장된 일정이 있는지", localStorage.getItem(nowCho));
-	            					const savedPlanTemp = localStorage.getItem(nowCho);
-	            					console.log("체크!!!!!!!!!!!!",savedPlanTemp);
+	            					const savedPlan = JSON.parse(localStorage.getItem(nowCho));
+	            					console.log("체크!!!!!!!!!!!!",savedPlan);
 	            					
-	            					if(savedPlanTemp!=null){
+	            					if(savedPlan!=null){ //경우 1) 저장된 일정이 있다면
 	            						
-	            						const savedPlan = savedPlanTemp.split(",");
+	            						//const savedPlan = savedPlanTemp.split(",");
 	            						console.log("배열로 받아온",nowCho,"의 일정",savedPlan);
 	            							            						
 	            						//작성 기록이 있다면, 카드를 새로 생성해서 출력해주기
@@ -219,17 +228,22 @@
 	            						document.getElementById("dropZone").innerHTML=""; //계속 appendChild하면 누적되므로, 먼저 비워주기
 	            						
 										for(let i=0;i<savedPlan.length;i++){
-											//cards.innerText = savedPlan[i];
 																					
-											const div = document.createElement("div");											
-											const num = savedPlan[i].slice(-1);
-											console.log("숫자 확인 : ",num);
+											const div = document.createElement("div");				
 											
- 											div.id="p"+num;
-											div.innerHTML = savedPlan[i];
+											div.setAttribute("id", savedPlan[i].id);
+											div.setAttribute("placeTitle", savedPlan[i].title);
+											div.setAttribute("latitude", savedPlan[i].latitude);
+											div.setAttribute("longitude", savedPlan[i].longitude);
+											div.setAttribute("memo", savedPlan[i].memo);
+											
+											div.innerText = savedPlan[i].title;
 											div.classList.add("box_drag");
 											div.setAttribute("draggable",true);
-											document.getElementById("dropZone").appendChild(div);
+											document.getElementById("dropZone").appendChild(div); 
+											
+											
+											
 										}
 	            						
 										clearDragEvent();
@@ -238,41 +252,66 @@
 	            					} else {
 	            						
 	            						//0614) 여기부터 다시 시작! -------------------------------------------------------
-	            						//선택한 일자로 저장된 일정이 없으면, 디폴트로 출력하기
-	            						//document.getElementById("dropZone").innerHTML="";
+	            						/*
 	            						let cnt = 1;
 	            						cards.forEach(e=>{	            					
 	            							
 	            							e.innerText = "plan "+cnt++;
 	            							
-	            						})
+	            						}) */
+	            						//0615) 선택한 일자로 저장된 일정이 없으면, 디폴트 : 카드 없음
+	            						document.getElementById("dropZone").innerHTML="";
+
+	            						
 
 	            					}
 				            		
 				            						            		
 				            		//장소 방문 순서 편집 관련 로직---------------------------------------------
 				            		
-					            		let arr=[]; //"카드"의 innerText정보는 배열에 저장하기
-					            		console.log(arr);
+					            		let arr=[]; //"카드"의 정보(아이디, 장소명, 위도, 경도 -> 객체化)는 arr배열에 저장하기
+					            		console.log("카드는 뭐지?////////////////", cards);
 					            		
-					            		for(let i=0;i<cards.length;i++){					            			
-					            			arr[i] = cards[i].innerText;					            			
-					            		}					            		
+					            		//장소의 정보를 저장하기 위해 > "생성자 함수"만들기
+					            		function Places(id,title,latitude,longitude,memo){
+					            			
+					            			this.id = id;
+					            			this.title = title;
+					            			this.latitude = latitude;
+					            			this.longitude = longitude;
+					            			this.memo = memo;
+					           
+					            		}
+					            		
+					            		
+					            		for(let i=0;i<cards.length;i++){	
+					            			
+					            			//생성자 함수로 "장소"객체 생성 후, 배열arr에 저장하기
+					           				arr.push(new Places(cards[i].getAttribute("id"),
+					           									cards[i].getAttribute("placeTitle"),
+					           						            cards[i].getAttribute("latitude"),
+					           						            cards[i].getAttribute("longitude"),
+					           						            cards[i].getAttribute("memo")));
+					            			
+					            		}
+					            		
+					            		
 					            		console.log(arr);
-				            						            						            		
-					            		let tempString = arr.join(","); //구분자(콤마)를 기준으로, 배열 內 인덱스 정보들을 하나의 문자열로 변환함
-					            		console.log(tempString); //문자열로 잘 변환됐는지 확인				           
+				            						            						            				           
 				        
-									//이전 것을 저장한 이후에
-									//1. 일자 바꾸기
+									//다음 option으로 전환되기 전, 마무리 작업 (2가지)
+									//1. 타이틀 > 출력 일자 바꾸기
 			            			document.getElementById("dayTitle").innerText= nowCho;
 			            			
-			            			//select 변경 時, 편집한 카드 배열 내용을 localStorage에 해당 일자의 일정을 저장함
-			            			localStorage.setItem(preCho,arr);
+			            			//select 변경 時, 편집한 카드 배열 내용을 localStorage에 해당 일자의 일정으로 저장함
+			            			
+			            			localStorage.setItem(preCho,JSON.stringify(arr));
 			            			
 			            			//if 문으로 선택 값에 따라 getItem하면 될 거 같다... null 등이 아니면 get이후에 set하면 되지 않을까?
 			            					
-			            			console.log("확인 : ",localStorage.getItem(preCho));
+			            			console.log("현재 편집한 일정이 잘 저장됐는지 확인 : "
+			            					    ,JSON.parse(localStorage.getItem(preCho)));
+			            
 			            			if(localStorage.getItem(preCho)!=null){
 			            				console.log("비어있지는 않아");
 			            			}
@@ -354,11 +393,5 @@
 	            	     	            		
 	            		</script>	
 
-
-<!-- 지도 -->
-<%--   <%@include file="/views/planner/map.jsp" %>  --%>
-	
-<!-- <div id="map"></div>  -->
-	
 </body>
 </html>

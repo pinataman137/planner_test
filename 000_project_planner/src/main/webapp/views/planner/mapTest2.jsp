@@ -21,7 +21,7 @@
 <!--     	<div id="searchbox"> -->
 		        <div class="option">
 		            <div>
-		            	<h1 id="listTitle" style="text-align:left;padding:10px;margin-bottom:0px;margin-left:5px;">SEARCH</h1>
+		            	<h1 id="listTitle" style="text-align:left;padding:10px;margin-bottom:0px;margin-left:5px;font-family:Rubik;">SEARCH!</h1>
 		                <form onsubmit="searchPlaces(); return false;" id="searchBox">
 		                    	<input type="text" value="에버랜드" id="keyword" size="40" placeholder="검색어를 입력하세요"> 
 		                    	<button id="searchBtn" type="submit">검색하기</button> 
@@ -126,7 +126,7 @@ var customContent = '<div class="wrap">' +
             '        <div class="body">' + 
             '            <div class="desc">' + 
             '                <div class="ellipsis" style="margin-bottom:10px;font-size:50">장소를 플랜에 추가할까요?</div>' +
-            				 '<input type="text" placeholder="메모를 작성해주세요">'+
+            				 '<input type="text" id="memo" placeholder="메모를 작성해주세요">'+
     '               		 <button id="addBtn" onclick="addList();" class="addToList" style="font-size:12px;margin-left:20px;width:50px;">좋아요</button>' + 
             '        	 </div>' + 
             '    </div>' +    
@@ -141,8 +141,9 @@ function addList(){ //특정 장소를 사용자의 플랜 리스트에 추가�
 	const lat = document.getElementById("hiddenLat").innerText;
 	const lng = document.getElementById("hiddenLng").innerText;
  	const placeTitle = document.getElementById("hiddenTitle").innerText;
+ 	const memo = document.getElementById("memo").value;
  	
-	console.log("위도 : ",lat,"경도, ",lng,"타이틀",placeTitle);
+	console.log("위도 : ",lat,"경도 : ",lng,"타이틀 : ",placeTitle,"메모 : ",memo);
 
 	//장소 카드 생성해, 플랜 리스트에 추가하기 -----------------------------------
 	const dropZone = document.getElementById("dropZone");
@@ -157,33 +158,31 @@ function addList(){ //특정 장소를 사용자의 플랜 리스트에 추가�
 	const cards = document.querySelectorAll("div#dropZone div");
 	console.log("현재 카드 개수 : ",cards.length);
 	let tempNo = cards.length+1;
-	addPlan.id="p"+tempNo; //☆ addPlan > id값 다시 정해야 함...
+	addPlan.id="p"+tempNo;
 	dropZone.insertAdjacentElement("beforeend",addPlan);
 	addDragEvent();
 	
 	console.log(addPlan);
+
+	//장소 카드의 "속성"을 새로 생성해, 해당 장소의 정보를 저장하기--------------------
+	addPlan.setAttribute("id",addPlan.id);
+	addPlan.setAttribute("placeTitle",placeTitle);
+	addPlan.setAttribute("latitude",lat);
+	addPlan.setAttribute("longitude",lng);
+	addPlan.setAttribute("memo",memo);
+	//"속성"이 잘 저장됐는지, 확인하기-------------------------------------------
+	console.log("속성 > 아이디 : ", addPlan.getAttribute("id"));
+	console.log("속성 > 장소명 : ", addPlan.getAttribute("placeTitle"));
+	console.log("속성 > 위도 : ", addPlan.getAttribute("latitude"));
+	console.log("속성 > 경도 : ", addPlan.getAttribute("longitude"));
+	console.log("속성 > 메모 : ", addPlan.getAttribute("memo"));
+	//--------------------------------------------------------------------
 	
-	choTest(addPlan);
+	
+	choTest(addPlan); //더블클릭 시, 삭제되는 로직 구현함 (☆ 하지만 고쳐야 함... 에러 많음)
 } 
 
 
-
-/* 	//장소카드 더블 클릭 시, 삭제되도록 로직 구현하기
-	const removeCards = document.querySelectorAll("div#dropZone div");
-
-	console.log("존재하긴 하냐고 : ",removeCards);
-	
-	removeCards.forEach(e=>{
-	
-		console.log("뭔데? : ",e);
-		e.addEventListener("dblclick",e=>{
-			alert("하이!");
-		}); 
-		choTest(e);
-		console.log("등록 완료!");
-	
-	}); */
-	
 	
 	//window.onload()함수로 등록하면 된다고 함...
     function choTest(e){
