@@ -2,7 +2,7 @@
 
 #listTitle {font-size:25px;text-align:left;padding:10px;margin-bottom:0px;margin-left:5px;}
 #searchBtn {background-color:black;color:white;border-radius:5px;font-size:13px;margin-left:0px;}
-#searchBox {display:flex;margin-bottom:30px;margin-top:10px;margin-right:10px;}
+#searchBox {display:flex;margin-bottom:30px;margin-top:10px;margin-right:10px;margin-left:29px}
 #keyword {width:200px;}
 .map_wrap, .map_wrap * {margin:0;padding:0;font-family:'Malgun Gothic',dotum,'돋움',sans-serif;font-size:12px;}
 .map_wrap a, .map_wrap a:hover, .map_wrap a:active{color:#000;text-decoration: none;}
@@ -46,7 +46,7 @@
 #pagination a {display:inline-block;margin-right:10px;}
 #pagination .on {font-weight: bold; cursor: default;color:#777;}
 
-
+/* #likesBtn {font-size:15px; width: 100px; height: 30px; position: absolute; left: 3px; top: 3px;} */
 
 /* 커스텀 오버레이 관련 CSS */
     .wrap {position: absolute;left: 0;bottom: 40px;width: 288px;height: 132px;margin-left: -144px;text-align: left;overflow: hidden;font-size: 12px;font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;line-height: 1.5;}

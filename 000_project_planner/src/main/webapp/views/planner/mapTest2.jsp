@@ -34,7 +34,7 @@
 <!--         </div>    -->        
     </div>
 </div>
-<button id="likesBtn" style="width:100px;">좋아요</button>
+<button id="likesBtn" style="font-size:15px; width: 100px; height: 30px; position: absolute; left: 3px; top: 3px;">♥</button>
     
 
 	<!-- 지도 관련 스크립트 -->
@@ -43,7 +43,6 @@
 	
 <script>
 
-//const searchPlaces = document.getElementById("searchPlaces");
 
 
 
@@ -59,11 +58,31 @@ var mapContainer = document.getElementById('map'), // 지도를 표시할 div
 // 지도를 생성합니다    
 var map = new kakao.maps.Map(mapContainer, mapOption); 
 
+// 지도 위에 컨트롤러를 올림 : "좋아요" 버튼
 const likesBtn = document.getElementById("likesBtn");
 map.addControl(likesBtn, kakao.maps.ControlPosition.LEFT);
 
 
  map.relayout();
+ 
+ 
+//마커 추가 > 첫 번째 날! --------------------------------------------------------- 
+ 
+const dayOnePlan2 = JSON.parse(localStorage.getItem(1)); 
+console.log(dayOnePlan2);
+ 
+/* var positions = []; 
+for(let i=0;i<dayOnePlan2.length;i++){
+	
+	positions.push({title: dayOnePlan2[i].title,
+					latlng : new kakao.maps.Latlng(dayOnePlan2[i].latitude,dayOnePlan2[i].longitude)
+							//0617 에러 발생 : kakao.maps.Latlng is not a constructor
+							//리액트, 등등으로 오류를 수정할 수 있나 보다
+					});
+	
+} */ 
+
+//----------------------------------------------------------------------------- 
 
 // 장소 검색 객체를 생성합니다
 var ps = new kakao.maps.services.Places();  
@@ -79,10 +98,10 @@ function searchPlaces() {
 
     var keyword = document.getElementById('keyword').value;
 
-    if (!keyword.replace(/^\s+|\s+$/g, '')) {
-        alert('키워드를 입력해주세요!');
+     if (!keyword.replace(/^\s+|\s+$/g, '')) {
+        alert('키워드를 입력해주세요!'); //키워드 없는 화면으로
         return false;
-    }
+    } 
 
     // 장소검색 객체를 통해 키워드로 장소검색을 요청합니다
     ps.keywordSearch( keyword, placesSearchCB); 
@@ -125,15 +144,16 @@ var customContent = '<div class="wrap">' +
             '        </div>' + 
             '        <div class="body">' + 
             '            <div class="desc">' + 
-            '                <div class="ellipsis" style="margin-bottom:10px;font-size:50">장소를 플랜에 추가할까요?</div>' +
-            				 '<input type="text" id="memo" placeholder="메모를 작성해주세요">'+
+            '                <div class="ellipsis" style="font-size:50;margin-bottom:8px;">장소를 플랜에 추가할까요?</div>' +
+            				 '<input type="text" id="memo" placeholder="메모를 작성해주세요">'+ //☆ 해당 장소에 대한 정보를 이미 사용자가 작성했다면, value에 값을 넣어도 되지 않을까
     '               		 <button id="addBtn" onclick="addList();" class="addToList" style="font-size:12px;margin-left:20px;width:50px;">좋아요</button>' + 
             '        	 </div>' + 
             '    </div>' +    
             '</div>'+
             '<div style="display:none", id="hiddenLat"></div>' //마커의 위도
             +'<div style="display:none", id="hiddenLng"></div>' //마커의 경도
-            +'<div style="display:none", id="hiddenTitle"></div>'; //마커의 장소명
+            +'<div style="display:none", id="hiddenTitle"></div>' //마커의 장소명
+            +'<div style="display:none", id="markerInfo"></div>'; //0616 마커 관련 전반적인 정보 확인
  
 function addList(){ //특정 장소를 사용자의 플랜 리스트에 추가하는 인터페이스
 	clearDragEvent();
@@ -163,6 +183,8 @@ function addList(){ //특정 장소를 사용자의 플랜 리스트에 추가�
 	addDragEvent();
 	
 	console.log(addPlan);
+			
+	//-------------------------------------------------------------------
 
 	//장소 카드의 "속성"을 새로 생성해, 해당 장소의 정보를 저장하기--------------------
 	addPlan.setAttribute("id",addPlan.id);
@@ -179,40 +201,51 @@ function addList(){ //특정 장소를 사용자의 플랜 리스트에 추가�
 	//--------------------------------------------------------------------
 	
 	
-	choTest(addPlan); //더블클릭 시, 삭제되는 로직 구현함 (☆ 하지만 고쳐야 함... 에러 많음)
+	deletePlace(addPlan); //더블클릭 시, 삭제됨
 } 
 
 
-	
-	//window.onload()함수로 등록하면 된다고 함...
-    function choTest(e){
+	//"카드" 관련 이벤트 -----------------------------------------------------
+    function deletePlace(e){
+		
     	let dropZone = document.getElementById("dropZone");   	
     	e.addEventListener("dblclick",e=>{   		
     		alert("삭제!");
-    		dropZone.removeChild(e.target);   		
+    		dropZone.removeChild(e.target);   
+    		
+    		//0616) 이미지 오버레이한 마커를 원상태로 복귀해야 함...
+    		
     	});
+ 	
     };
     
-    (()=>{
-    	
-    	
-    	alert("하이!")
-    	//장소카드 더블 클릭 시, 삭제되도록 로직 구현하기☆ (기존 카드는 이벤트 등록이 안 되는데 왤까?)
-    	const removeCards = document.querySelectorAll("div#dropZone div");
-
-    	console.log("존재하긴 하냐고 : ",removeCards);
-    	
-    	removeCards.forEach(e=>{
-    	
-    		console.log("뭔데? : ",e);
-    		e.addEventListener("dblclick",e=>{
-    			alert("하이!");
-    		}); 
-    		choTest(e);
-    		console.log("등록 완료!");
-    	
-    	});
     
+/*     
+    
+    function moveMap(){ //카드에 마우스 오버 시, 지도가 이동하도록 구현하기
+    //카드가 만들어지는 상황 (3가지 : 1일차 새로고침||새로 등록한 카드||옵션 변경 시)
+    //-> 해당 메소드를 3번 등록해야 함
+    
+    	let dropZones = document.querySelectorAll("div#dropZone>div");
+    	console.dir("잘 받아오니?", dropZones);
+/*     	e.addEventListener("mouseover",e=>{
+ 		
+		
+    	});
+    	 
+    } */
+    
+    
+
+    
+    //-----------------------------------------------------------------------
+    
+    (()=>{ //자동실행 함수
+    	
+    	
+    	alert("새로고침됨!")
+    	//장소카드 더블 클릭 시, 삭제되도록 로직 구현하기☆ (기존 카드는 이벤트 등록이 안 되는데 왤까?)
+
       
     })();
     
@@ -234,6 +267,11 @@ function displayPlaces(places) {
     // 지도에 표시되고 있는 마커를 제거합니다
     removeMarker();
     
+    //0616 > 리스트에 추가된 장소 > 마커 이미지 변경 관련
+/*     const loadDay = document.getElementById("daysOption").value;
+    const loadData = JSON.parse(localStorage.getItem(loadDay));
+    console.log("저장내역 확인 : ", loadData); */
+    
     for ( var i=0; i<places.length; i++ ) {
 
         // 마커를 생성하고 지도에 표시합니다
@@ -248,17 +286,39 @@ function displayPlaces(places) {
         // 마커와 검색결과 항목에 mouseover 했을때
         // 해당 장소에 인포윈도우에 장소명을 표시합니다
         // mouseout 했을 때는 인포윈도우를 닫습니다
-        (function(marker, title) {
+        (function(marker, title) { //마커 관련 function
+        	
+        	
+        	//0616 페이지 reload||select>option변경 시, 저장된 내역이 있다면 해당 지역의 마커 이미지를 변경하기------   	
+/*         	for(let i=0;i<loadData.length;i++){
+        		
+        		//console.log(loadData[i].title);
+        		
+        		//console.log();
+        		
+        		if(loadData[i].title===title){ //☆ 문제 : 1일차만 됨. +장소 삭제 시 반영 안 됨...
+        			
+        			//저장된 데이터와, 출력 데이터가 동일하다면...(기준:장소명)
+ 					var markerImage = new kakao.maps.MarkerImage(						
+						    'https://cdn-icons-png.flaticon.com/512/727/727606.png', //마커 : 이미지
+						    new kakao.maps.Size(31, 35), new kakao.maps.Point(13, 34));				
+							marker.setImage(markerImage);													
+        		}       		
+        	} */
+        	//---------------------------------------------------------------------------------------
+        	
+        	
             kakao.maps.event.addListener(marker, 'mouseover', function() {
+            	
                 displayInfowindow(marker, title);
-
+                
             });
 
             kakao.maps.event.addListener(marker, 'mouseout', function() {
                 infowindow.close();
             });
             
-          	//마커 클릭이벤트 만들기~ -----------------------------------------------------
+          	//마커 이벤트 > 마우스오버 > 장소명 출력 --------------------------------------
     	
 			var overlay = new kakao.maps.CustomOverlay({
 			    content: customContent,
@@ -269,7 +329,7 @@ function displayPlaces(places) {
           		overlay.setMap(null);
           	
 	
-			//커스텀 오버레이를 만듦!		
+			//마커 이벤트 > 클릭 이벤트 > 커스텀 오버레이를 만듦!		
 			let flag = true;
 			kakao.maps.event.addListener(marker, 'click', function() {
 				
@@ -288,12 +348,40 @@ function displayPlaces(places) {
 				//console.log(places[i].address_name);
 				//console.log(title);
 				document.getElementById("hiddenTitle").innerText=title;
+
+									
+				//저장해둔 "메모"가 있다면, 해당 메모를 input창의 value에 출력해주기
+				const savedData = JSON.parse(localStorage.getItem(document.getElementById("dayTitle").innerText));
+				console.log(savedData, title);
+
+				const memo = document.getElementById("memo");
+				
+ 				savedData.forEach(e=>{					
+					if(title===e.title&&e.memo!=''){
+						memo.value = e.memo;
+					}					
+				});
+				
+								
+				//0616 마커의 이미지 변경을 위해----------------------------------------
+				const isAdded = document.getElementById("addBtn");
+				
+				isAdded.addEventListener("click", e=>{ //"좋아요" 클릭 발생 시
+					
+					var markerImage = new kakao.maps.MarkerImage(						
+								    'https://cdn4.iconfinder.com/data/icons/small-n-flat/24/map-marker-256.png', //마커 : 이미지
+								    new kakao.maps.Size(31, 35), new kakao.maps.Point(13, 34));				
+ 									marker.setImage(markerImage);
+ 									
+ 					
+				}); //방문 장소에서 삭제 시 마커 이미지 원상태로 복귀하기... (removeCard()메소드에서 구현해야 할듯)
 				
 				
 				flag = false;
 				
-				} else {
+				} else { //재클릭 시, 인포메이션 창 닫기
 					overlay.setMap(null);
+					//marker.setImage(); //마커 이미지 해제 (문제점 : 다른 default이미지로 출력됨)
 					flag=true;
 				}
 			});
@@ -319,11 +407,45 @@ function displayPlaces(places) {
 
     // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
     map.setBounds(bounds);
-    
-
-    
-    
+       
 }
+
+
+//0616 마커 이미지 변경 관련 메소드 실험
+
+
+ 	
+/* 	(()=>{
+		//alert("자동실행함수?");
+		
+		
+		let ck = document.getElementById("dayTitle").innerText; //객체를 불러오지 못함. 왤까...
+		console.log("//////////////",ck);
+		
+ 		 let savedData = JSON.parse(localStorage.getItem(document.getElementById("dayTitle").innerText));
+
+		 console.log(savedData);
+
+		 	for(let i=0;i>savedData.length;i++){
+		 	console.log("안녕....................");
+		 		let savedPosition = new kakao.maps.Latlng(savedData.latitude,savedData.longitude),
+		 	marker = addMarker(savedPosition,i);
+		 	
+		 	var markerImage = new kakao.maps.MarkerImage(						
+		 	    'https://cdn-icons-png.flaticon.com/512/727/727606.png', //마커 : 이미지
+		 	    new kakao.maps.Size(31, 35), new kakao.maps.Point(13, 34));				
+		 			marker.setImage(markerImage); 
+		 	
+		 } 
+		 
+		
+		
+	})();  */
+
+
+
+
+
 
 
 // 검색결과 항목을 Element로 반환하는 함수입니다

@@ -78,7 +78,7 @@
 					           			</form>   
 			                	
 			                	<!-- 사용자가 입력한 일수 만큼, select > option이 생성되도록 구현함 -->
-				                	<select id="daysOption" style="width:310px; margin-left:10px; font-size:20px;">
+				                	<select id="daysOption" style="width:302px; margin-left:18px; font-size:18px;">
 				                	</select>			                			                
 			                </div>		                
 			            
@@ -87,6 +87,10 @@
 			                	<div id="titleBox">
 			                		<h3 id="dayTitle" style=""></h3>&nbsp<h4 style="margin-top:23px;font-family:Noto Sans KR">번째 날의 계획</h4>
 			                	</div>
+			                	<div>
+			                		<h5 id="deleteInfo">* 더블클릭 시, 카드를 삭제할 수 있습니다</h5>
+			                	</div>
+			                	
 			                	
 	
 			                	
@@ -114,7 +118,7 @@
 	            		</div>
 	         </div>
 	    </div>
-     <%@include file="/views/planner/mapTest2.jsp" %>		            		
+	    <%@include file="/views/planner/mapTest2.jsp" %>	          		
 	            		<script>
             		
 	            		
@@ -148,17 +152,18 @@
 								//0615-----------------------------------------------------------------
 								//2. 장소 정보를 객체로서 저장함! 객체의 정보를 재가공하지 않고, 적절히 꺼내 쓸 수 있도록 구현하기
 								const dayOnePlan = JSON.parse(localStorage.getItem(1));
+								var imageSrc = 'https://cdn4.iconfinder.com/data/icons/small-n-flat/24/map-marker-256.png'; //마커 이미지
 
 								//console.log(dayOnePlan[0].id);
 								
 								if(dayOnePlan!=null&&thisDay==1){
 									console.log("1일차 데이터 있어", dayOnePlan);
 									
-									//데이터가 있다면, 새로고침 시에도 해당 장소 데이터가 출력되도록 로직 구현하기
+									//1. 리스트 > 장소 카드 관련
+									//> 데이터가 있다면, 새로고침 시에도 해당 장소 데이터가 출력되도록 로직 구현하기
 									//const dayOnePlanArr = dayOnePlan.split(",");
 									//console.log("배열로 바꾸면? ", dayOnePlanArr);
-									
-									
+																		
             						document.getElementById("dropZone").innerHTML=""; //계속 appendChild하면 누적되므로, 먼저 비워주기
             						
 									for(let i=0;i<dayOnePlan.length;i++){				
@@ -176,13 +181,33 @@
 										div.setAttribute("draggable",true);
 										document.getElementById("dropZone").appendChild(div); 
 																			
+										deletePlace(div);
 										
+										
+										 
+									    //마커 출력하기 ------------------------------------------------------------------------------
+										
+									    
+									    // 마커 이미지의 이미지 크기 입니다
+									    var imageSize = new kakao.maps.Size(36, 37); 
+									    
+									    // 마커 이미지를 생성합니다    
+									    var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize); 
+									    
+									    // 마커를 생성합니다
+									    var marker = new kakao.maps.Marker({
+									        map: map, // 마커를 표시할 지도
+									        //position: positions[i].latlng, // 마커를 표시할 위치
+									        position: new kakao.maps.LatLng(dayOnePlan[i].latitude, dayOnePlan[i].longitude),
+									        title : dayOnePlan[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
+									        image : markerImage // 마커 이미지 
+									    });
+			
 									}
             						
 									//clearDragEvent();
 									//addDragEvent();
 									
-					
 								}
 							
 	            				//0613------------------------------------------------------------------
@@ -242,7 +267,7 @@
 											div.setAttribute("draggable",true);
 											document.getElementById("dropZone").appendChild(div); 
 											
-											
+											deletePlace(div); //더블클릭 시, 리스트에서 장소 삭제됨
 											
 										}
 	            						
@@ -388,7 +413,59 @@
 		            	         
 		            	        }
 	            	     	            		
-	            		</script>	
+	            		</script>
+	            		
+	            		
+	            		<script>
+	            		//페이지 새로고침||전환 시에도 마커의 이미지는 변경된 값 그대로 유지하도록 하는 것
+	            		
+/* 	            		//1. 현재 선택된 일자로 저장된 목록 확인하기
+	 					
+	 					const savedPlan = JSON.parse(localStorage.getItem(document.getElementById("dayTitle").innerText));
+	 					console.log("///////확인 가능?", savedPlan);
+	            		
+	 					//2. "좌표"를 불러와 해당 위치에 사용자 정의 마커 생성하기
+	 					savedPlan.forEach(e=>{
+	 						
+	 						console.log(e.latitude,e.longitude);
+	 						
+ 	 						var markerPosition = new kakao.maps.LatLng(e.latitude,e.longitude);
+	 						
+		 					var marker = new kakao.maps.Marker({
+		 						position : markerPosition
+		 						
+		 						marker.setMap(map); 
+		 						
+		 					});
+		 					
+		 					
+		 					
+							var markerImage = new kakao.maps.MarkerImage(						
+								    'https://cdn-icons-png.flaticon.com/512/727/727606.png', //마커 : 이미지
+								    new kakao.maps.Size(31, 35), new kakao.maps.Point(13, 34));				
+ 							marker.setImage(markerImage);
+	 						
+	 					}); */
+	 					
+/* 	 					const savedPlan = JSON.parse(localStorage.getItem(document.getElementById("dayTitle").innerText));
+	 					
+	 					console.log(savedPlan, savedPlan.length);
+	 					
+ 	 					for(let i=0;i>savedPlan.length;i++){
+	 						console.log("안녕....................");
+ 	 						let savedPosition = new kakao.maps.Latlng(savedPlan.latitude,savedPlan.longitude),
+	 						marker = addMarker(savedPosition,i);
+	 						
+	 						var markerImage = new kakao.maps.MarkerImage(						
+								    'https://cdn-icons-png.flaticon.com/512/727/727606.png', //마커 : 이미지
+								    new kakao.maps.Size(31, 35), new kakao.maps.Point(13, 34));				
+ 									marker.setImage(markerImage); 
+	 						
+	 					}	 */ 
+
+	            		
+	            		</script>
+	            			
 
 </body>
 </html>
