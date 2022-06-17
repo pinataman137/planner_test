@@ -204,6 +204,7 @@ var customContent = '<div class="wrap">' +
 	
 	deletePlace(addPlan); //더블클릭 시, 삭제됨
 	//deletePlaceMarker(addPlan);
+	moveMap(addPlan);
 } 
 
 
@@ -243,29 +244,38 @@ var customContent = '<div class="wrap">' +
     		}
 	
     		dropZone.removeChild(e.target);   
-
-    		
-    		    		
+		    		
     	});
  	
     };
 
 	
 
-/*     
+     
     
-    function moveMap(){ //0617) 카드에 마우스 오버 시, 지도가 이동하도록 구현하기
-    //카드가 만들어지는 상황 (3가지 : 1일차 새로고침||새로 등록한 카드||옵션 변경 시)
-    //-> 해당 메소드를 3번 등록해야 함
+    function moveMap(e){ //0617) 카드에 마우스 오버 시, 지도가 이동하도록 구현
     
-    	let dropZones = document.querySelectorAll("div#dropZone>div");
-    	console.dir("잘 받아오니?", dropZones);
-/*     	e.addEventListener("mouseover",e=>{
- 		
+    	//let dropZones = document.querySelectorAll("div#dropZone>div");
+    	
+	     	e.addEventListener("mouseover",e=>{
+	 		
+	     			const lat = e.target.getAttribute("latitude");
+	     			const lng = e.target.getAttribute("longitude");
+	     			panTo(lat,lng);
 		
-    	});
+	    	});
     	 
-    } */
+    } 
+    
+    
+	function panTo(lat,lng) {
+		    // 이동할 위도 경도 위치를 생성합니다 
+		    var moveLatLon = new kakao.maps.LatLng(lat, lng);
+		    
+		    // 지도 중심을 부드럽게 이동시킵니다
+		    // 만약 이동할 거리가 지도 화면보다 크면 부드러운 효과 없이 이동합니다
+		    map.panTo(moveLatLon);            
+		}   
     
 
             

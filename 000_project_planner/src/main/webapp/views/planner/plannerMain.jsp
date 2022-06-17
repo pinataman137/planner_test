@@ -15,7 +15,7 @@
 				
 			}			
 		}
-		//System.out.println("쿠키 가져왔어 : "+days);
+		
 	}
 	
 	
@@ -118,7 +118,11 @@
 	            		</div>
 	         </div>
 	    </div>
-	    <%@include file="/views/planner/mapTest2.jsp" %>	          		
+	    <%@include file="/views/planner/mapTest2.jsp" %>
+	    
+	    
+	    
+	    	          		
 	            		<script>
 	            		
 	            		
@@ -150,9 +154,6 @@
 		            	
 	            		
 							const thisDay = document.querySelector("#daysOption>option").value;
-	            			
-							//document.getElementById("dayTitle").innerText= "Day "+thisDay+"의 여행계획";
-							//document.getElementById("dayTitle").innerText= thisDay;
 							document.getElementById("dayTitle").innerText= <%=fromDate!=0?fromDate:1%>
 							
 							
@@ -209,34 +210,23 @@
  										daysOption.addEventListener("change",e=>{ //옵션 변경 시, 현재 일정에 해당하는 선과 마커를 지움!
  										
  										
- 										if(polyline!=null&&polyline.setMap()!=null){ //선 삭제
-											polyline.setMap(null);
- 										}
- 										
-  										if(markersArr!=null&&markersArr.length!=0){ //마커 삭제
-  											
- 											 markersArr.forEach(e=>{
- 												 e.setVisible(false);
- 											 });
- 										
-  										} 
- 										
- 										
- 										
- 										
- 										
+		 										if(polyline!=null&&polyline.setMap()!=null){ //선 삭제
+													polyline.setMap(null);
+		 										}
+		 										
+		  										if(markersArr!=null&&markersArr.length!=0){ //마커 삭제
+		  											
+		 											 markersArr.forEach(e=>{
+		 												 e.setVisible(false);
+		 											 });
+		 										
+		  										} 
+										
 										});
-			            			
 			            			
 			            		}
 		            		
-		            		
-		            		
-	            		
-		            			
-							
-							
-							
+			
 								//0614-----------------------------------------------------------------
 								//1. 1일차의 데이터를 localStorage에 저장했으나 "새로고침"할 경우 화면상 카드는 리셋됨을 확인함!
 								//0615-----------------------------------------------------------------
@@ -274,6 +264,7 @@
 										document.getElementById("dropZone").appendChild(div); 
 																			
 										deletePlace(div);
+										moveMap(div);
 										 
 									}
             						
@@ -339,14 +330,15 @@
 													document.getElementById("dropZone").appendChild(div); 
 													
 													deletePlace(div); //더블클릭 시, 리스트에서 장소 삭제됨
+													moveMap(div);
 		
 										
 						            				}
 
-														printMyLog(savedPlan,lineArr);
-														
+														printMyLog(savedPlan,lineArr);									
 														clearDragEvent();
 														addDragEvent();
+														
 	            									} else {
 	            	            						//0615) 선택한 일자로 저장된 일정이 없으면, 디폴트 : 카드 없음
 	            	            						document.getElementById("dropZone").innerHTML="";
