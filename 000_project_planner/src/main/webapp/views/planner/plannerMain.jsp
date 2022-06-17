@@ -120,8 +120,18 @@
 	    </div>
 	    <%@include file="/views/planner/mapTest2.jsp" %>	          		
 	            		<script>
-            		
 	            		
+	            		
+	            		//새로고침 時, 편집 내용이 소멸될 수 있음을 알림
+	            		window.onbeforeunload = function(e){
+	            			
+	            			let warning = '변경사항이 저장되지 않을 수 있습니다!';
+	            			e.returnValue = warning;
+	            			return warning;
+	            			
+	            		};
+	            		
+
 		                /* 여행 일수 기준 select > option생성하기 */
 		                	const daysOption = document.getElementById("daysOption");
 		                	const inputDay = <%=days%>;
@@ -147,13 +157,80 @@
 							
 							
 							
+		            		function printMyLog(myLog, logArr){ //일자 별 마커 및 선 출력 + 옵션 전환 時 선 삭제
+		            			
+		            			
+			            		for(let i=0;i<myLog.length;i++){	
+			            			
+									    //마커 출력하기 ------------------------------------------------------------------------------								    
+									    // 마커 이미지의 이미지 크기 입니다
+									    var imageSize = new kakao.maps.Size(36, 37); 
+									    
+									    // 마커 이미지를 생성합니다    
+									    var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize); 
+									    
+									    // 마커를 생성합니다
+									    var marker = new kakao.maps.Marker({
+									        map: map, // 마커를 표시할 지도
+									        //position: positions[i].latlng, // 마커를 표시할 위치
+									        position: new kakao.maps.LatLng(myLog[i].latitude, myLog[i].longitude),
+									        title : myLog[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
+									        image : markerImage // 마커 이미지 
+									    });
+									    
+									    //마커 간 선으로 연결하기 ------------------------------------------------------------------------
+			
+										logArr.push(new kakao.maps.LatLng(myLog[i].latitude, myLog[i].longitude));
+									
+			            		}
+		            		
+		            		
+							    
+									    // 지도에 표시할 선을 생성합니다
+									    var polyline = new kakao.maps.Polyline({
+									        path: logArr, // 선을 구성하는 좌표배열 입니다
+									        strokeWeight: 5, // 선의 두께 입니다
+									        strokeColor: '#FFAE00', // 선의 색깔입니다
+									        strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+									        strokeStyle: 'solid' // 선의 스타일입니다
+									    });
+				
+									    // 지도에 선을 표시합니다 
+									    polyline.setMap(map);              						
+			
+										//드래그 & 드롭 이벤트 관련
+										
+										//clearDragEvent();
+										//addDragEvent();
+									
+									//-----------------------------------------------------------------
+ 										daysOption.addEventListener("change",e=>{
+ 										//console.log(polyline.setMap()!=null?"널이 아니야":"널이야");
+ 										if(polyline!=null&&polyline.setMap()!=null){
+											polyline.setMap(null);
+ 										}//옵션 변경 時, "선"은 지워줌
+ 										
+									});
+			            			
+			            			
+			            		}
+		            		
+		            		
+		            		
+	            		
+		            			
+							
+							
+							
 								//0614-----------------------------------------------------------------
 								//1. 1일차의 데이터를 localStorage에 저장했으나 "새로고침"할 경우 화면상 카드는 리셋됨을 확인함!
 								//0615-----------------------------------------------------------------
 								//2. 장소 정보를 객체로서 저장함! 객체의 정보를 재가공하지 않고, 적절히 꺼내 쓸 수 있도록 구현하기
 								const dayOnePlan = JSON.parse(localStorage.getItem(1));
 								var imageSrc = 'https://cdn4.iconfinder.com/data/icons/small-n-flat/24/map-marker-256.png'; //마커 이미지
-
+								var linePath = [];	
+								
+								
 								//console.log(dayOnePlan[0].id);
 								
 								if(dayOnePlan!=null&&thisDay==1){
@@ -163,7 +240,7 @@
 									//> 데이터가 있다면, 새로고침 시에도 해당 장소 데이터가 출력되도록 로직 구현하기
 									//const dayOnePlanArr = dayOnePlan.split(",");
 									//console.log("배열로 바꾸면? ", dayOnePlanArr);
-																		
+									//printMyLog(dayOnePlan,linePath);									
             						document.getElementById("dropZone").innerHTML=""; //계속 appendChild하면 누적되므로, 먼저 비워주기
             						
 									for(let i=0;i<dayOnePlan.length;i++){				
@@ -182,34 +259,16 @@
 										document.getElementById("dropZone").appendChild(div); 
 																			
 										deletePlace(div);
-										
-										
 										 
-									    //마커 출력하기 ------------------------------------------------------------------------------
-										
-									    
-									    // 마커 이미지의 이미지 크기 입니다
-									    var imageSize = new kakao.maps.Size(36, 37); 
-									    
-									    // 마커 이미지를 생성합니다    
-									    var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize); 
-									    
-									    // 마커를 생성합니다
-									    var marker = new kakao.maps.Marker({
-									        map: map, // 마커를 표시할 지도
-									        //position: positions[i].latlng, // 마커를 표시할 위치
-									        position: new kakao.maps.LatLng(dayOnePlan[i].latitude, dayOnePlan[i].longitude),
-									        title : dayOnePlan[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
-									        image : markerImage // 마커 이미지 
-									    });
-			
 									}
             						
-									//clearDragEvent();
-									//addDragEvent();
+									printMyLog(dayOnePlan,linePath);
+
 									
+				
 								}
-							
+								
+		
 	            				//0613------------------------------------------------------------------
 	            				//1. select 前/後 일자 정보 가져오기
 	            				
@@ -224,14 +283,13 @@
 							
 														
 	            				daysOption.addEventListener("change",e=>{
+
 	            					
 	            					nowCho = daysOption.value;
 	            					console.log("이전", preCho); //select창에 출력된 "일자" 저장하기
 	            					console.log("지금", nowCho); //option을 선택함으로써 "변경된 일자"저장하기
 	            					//ex. 1일자->2일자 변경 시, preCho는 1, nowCho는 2가 됨
-	            					
-	            					
-	            						
+					
 				            		const cards = document.querySelectorAll("div#dropZone>div"); //장소 관련 카드들 불러오기
 				            		console.log("현재 dropZone에 추가된 카드 : (저장 이력이 없는 경우에는 없을 수도 있음!)",cards);
 				            		
@@ -239,64 +297,51 @@
 				            		//0613---------------------------------------------------------------
 				            		//임시저장 개념이므로, 저장소를 DB 대신 localStorage로 변경함
 				            		
-	            					//console.log("현재 저장된 일정이 있는지", localStorage.getItem(nowCho));
 	            					const savedPlan = JSON.parse(localStorage.getItem(nowCho));
-	            					console.log("체크!!!!!!!!!!!!",savedPlan);
+	            					let lineArr = []; //라인을 그어주기 위해서 만듦!
+
 	            					
-	            					if(savedPlan!=null){ //경우 1) 저장된 일정이 있다면
+	            					
+	            					if(savedPlan!=null&&savedPlan.length!=0){
+	            									
+	            								console.log("배열로 받아온",nowCho,"의 일정",savedPlan);  	
+        	            						//1. 작성 기록이 있다면, 카드를 새로 생성해서 출력해주기
+        	            						document.getElementById("dropZone").innerHTML=""; //계속 appendChild하면 누적되므로, 먼저 비워주기
 	            						
-	            						//const savedPlan = savedPlanTemp.split(",");
-	            						console.log("배열로 받아온",nowCho,"의 일정",savedPlan);
-	            							            						
-	            						//작성 기록이 있다면, 카드를 새로 생성해서 출력해주기
-	            						//let cntId = 1;
-	            						document.getElementById("dropZone").innerHTML=""; //계속 appendChild하면 누적되므로, 먼저 비워주기
-	            						
-										for(let i=0;i<savedPlan.length;i++){
-																					
-											const div = document.createElement("div");				
-											
-											div.setAttribute("id", savedPlan[i].id);
-											div.setAttribute("placeTitle", savedPlan[i].title);
-											div.setAttribute("latitude", savedPlan[i].latitude);
-											div.setAttribute("longitude", savedPlan[i].longitude);
-											div.setAttribute("memo", savedPlan[i].memo);
-											
-											div.innerText = savedPlan[i].title;
-											div.classList.add("box_drag");
-											div.setAttribute("draggable",true);
-											document.getElementById("dropZone").appendChild(div); 
-											
-											deletePlace(div); //더블클릭 시, 리스트에서 장소 삭제됨
-											
-										}
-	            						
-										clearDragEvent();
-										addDragEvent();
+												for(let i=0;i<savedPlan.length;i++){
+																							
+													const div = document.createElement("div");				
+													
+													div.setAttribute("id", savedPlan[i].id);
+													div.setAttribute("placeTitle", savedPlan[i].title);
+													div.setAttribute("latitude", savedPlan[i].latitude);
+													div.setAttribute("longitude", savedPlan[i].longitude);
+													div.setAttribute("memo", savedPlan[i].memo);
+													
+													div.innerText = savedPlan[i].title;
+													div.classList.add("box_drag");
+													div.setAttribute("draggable",true);
+													document.getElementById("dropZone").appendChild(div); 
+													
+													deletePlace(div); //더블클릭 시, 리스트에서 장소 삭제됨
+		
 										
-	            					} else {
-	            						
-	            						//0614) 여기부터 다시 시작! -------------------------------------------------------
-										//선택 일자에 저장 이력이 없을 경우, 기본 세팅 값이 출력되도록 구현함	            						
-	            						/*
-	            						let cnt = 1;
-	            						cards.forEach(e=>{	            					
-	            							
-	            							e.innerText = "plan "+cnt++;
-	            							
-	            						}) */
-	            						//0615) 선택한 일자로 저장된 일정이 없으면, 디폴트 : 카드 없음
-	            						document.getElementById("dropZone").innerHTML="";
+						            				}
 
-	            						
+														printMyLog(savedPlan,lineArr);
+														
+														clearDragEvent();
+														addDragEvent();
+	            									} else {
+	            	            						//0615) 선택한 일자로 저장된 일정이 없으면, 디폴트 : 카드 없음
+	            	            						document.getElementById("dropZone").innerHTML="";
+	            									}
 
-	            					}
 				            		
 				            						            		
-				            		//장소 방문 순서 편집 관련 로직---------------------------------------------
+				            			//플래너 내용 작성 > 장소 방문 순서 편집 관련 로직---------------------------------------------
 				            		
 					            		let arr=[]; //"카드"의 정보(아이디, 장소명, 위도, 경도 -> 객체化)는 arr배열에 저장하기
-					            		console.log("카드는 뭐지?////////////////", cards);
 					            		
 					            		//장소의 정보를 저장하기 위해 > "생성자 함수"만들기
 					            		function Places(id,title,latitude,longitude,memo){
@@ -337,7 +382,7 @@
 			            					
 			            			console.log("현재 편집한 일정이 잘 저장됐는지 확인 : "
 			            					    ,JSON.parse(localStorage.getItem(preCho)));
-
+			            			
 	            			});
  
 		                </script>
@@ -415,57 +460,7 @@
 	            	     	            		
 	            		</script>
 	            		
-	            		
-	            		<script>
-	            		//페이지 새로고침||전환 시에도 마커의 이미지는 변경된 값 그대로 유지하도록 하는 것
-	            		
-/* 	            		//1. 현재 선택된 일자로 저장된 목록 확인하기
-	 					
-	 					const savedPlan = JSON.parse(localStorage.getItem(document.getElementById("dayTitle").innerText));
-	 					console.log("///////확인 가능?", savedPlan);
-	            		
-	 					//2. "좌표"를 불러와 해당 위치에 사용자 정의 마커 생성하기
-	 					savedPlan.forEach(e=>{
-	 						
-	 						console.log(e.latitude,e.longitude);
-	 						
- 	 						var markerPosition = new kakao.maps.LatLng(e.latitude,e.longitude);
-	 						
-		 					var marker = new kakao.maps.Marker({
-		 						position : markerPosition
-		 						
-		 						marker.setMap(map); 
-		 						
-		 					});
-		 					
-		 					
-		 					
-							var markerImage = new kakao.maps.MarkerImage(						
-								    'https://cdn-icons-png.flaticon.com/512/727/727606.png', //마커 : 이미지
-								    new kakao.maps.Size(31, 35), new kakao.maps.Point(13, 34));				
- 							marker.setImage(markerImage);
-	 						
-	 					}); */
-	 					
-/* 	 					const savedPlan = JSON.parse(localStorage.getItem(document.getElementById("dayTitle").innerText));
-	 					
-	 					console.log(savedPlan, savedPlan.length);
-	 					
- 	 					for(let i=0;i>savedPlan.length;i++){
-	 						console.log("안녕....................");
- 	 						let savedPosition = new kakao.maps.Latlng(savedPlan.latitude,savedPlan.longitude),
-	 						marker = addMarker(savedPosition,i);
-	 						
-	 						var markerImage = new kakao.maps.MarkerImage(						
-								    'https://cdn-icons-png.flaticon.com/512/727/727606.png', //마커 : 이미지
-								    new kakao.maps.Size(31, 35), new kakao.maps.Point(13, 34));				
- 									marker.setImage(markerImage); 
-	 						
-	 					}	 */ 
 
-	            		
-	            		</script>
-	            			
 
 </body>
 </html>

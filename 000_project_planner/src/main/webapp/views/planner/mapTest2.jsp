@@ -35,11 +35,12 @@
     </div>
 </div>
 <button id="likesBtn" style="font-size:15px; width: 100px; height: 30px; position: absolute; left: 3px; top: 3px;">♥</button>
-    
+
 
 	<!-- 지도 관련 스크립트 -->
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a918dc059c0c7fe988d04540ed91f259&libraries=services"></script>
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a918dc059c0c7fe988d04540ed91f259&libraries=LIBRARY"></script>
+	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a918dc059c0c7fe988d04540ed91f259&libraries=services,clusterer,drawing"></script>
 	
 <script>
 
@@ -140,7 +141,7 @@ var customContent = '<div class="wrap">' +
             '    	 <div class="info">' + 
             '        <div class="title">' + 
             '            여기 괜찮아요?' + 
-            '            <div class="close" onclick="closeOverlay()" title="닫기"></div>' + 
+            '            <div class="close" id="exitBtn" title="닫기"></div>' + 
             '        </div>' + 
             '        <div class="body">' + 
             '            <div class="desc">' + 
@@ -155,7 +156,7 @@ var customContent = '<div class="wrap">' +
             +'<div style="display:none", id="hiddenTitle"></div>' //마커의 장소명
             +'<div style="display:none", id="markerInfo"></div>'; //0616 마커 관련 전반적인 정보 확인
  
-function addList(){ //특정 장소를 사용자의 플랜 리스트에 추가하는 인터페이스
+	function addList(){ //특정 장소를 사용자의 플랜 리스트에 추가하는 인터페이스
 	clearDragEvent();
 	       	
 	const lat = document.getElementById("hiddenLat").innerText;
@@ -202,27 +203,58 @@ function addList(){ //특정 장소를 사용자의 플랜 리스트에 추가�
 	
 	
 	deletePlace(addPlan); //더블클릭 시, 삭제됨
+	//deletePlaceMarker(addPlan);
 } 
 
 
 	//"카드" 관련 이벤트 -----------------------------------------------------
     function deletePlace(e){
 		
-    	let dropZone = document.getElementById("dropZone");   	
-    	e.addEventListener("dblclick",e=>{   		
+    	let dropZone = document.getElementById("dropZone");
+
+    	//console.log(e.target);
+    	
+    	e.addEventListener("dblclick",e=>{ //삭제 대상 카드 클릭 시 (카드 및 마커가 삭제됨)		
     		alert("삭제!");
+
+    		let placeLat = e.target.getAttribute("latitude"); //카드의 위도
+    		let placeLng = e.target.getAttribute("longitude"); //카드의 경도
+    		
+        	//console.log(placeLat,placeLng);
+        	
+    		//TODO 0617) 마커 삭제가 잘 안 됨... 카드 삭제할 때 실시간으로 좌표 값에 대응되는 마커도 함께 삭제되어야 하는데
+    		console.log("내가 생성한 마커들 : ", myMarkers); //내가 생성한 마커들
+    		
+    		//myMarkers.setMap(null);
+    		for(let i=0;i<myMarkers.length;i++){
+    			
+    			//myMarkers[i].setMap(null); //마커 전체 삭제
+    			let mkLat = myMarkers[i].getPosition().getLat();
+    			let mkLng = myMarkers[i].getPosition().getLng();
+    			console.log(mkLat, mkLng);
+    			console.log(placeLat, placeLng);
+    			
+				if(mkLat==placeLat&&mkLng==placeLng){
+					//alert("똑같네!");
+					myMarkers[i].setVisible(false);
+					break;
+				} //else alert("달라!");
+    			
+    		}
+	
     		dropZone.removeChild(e.target);   
+
     		
-    		//0616) 이미지 오버레이한 마커를 원상태로 복귀해야 함...
-    		
+    		    		
     	});
  	
     };
-    
-    
+
+	
+
 /*     
     
-    function moveMap(){ //카드에 마우스 오버 시, 지도가 이동하도록 구현하기
+    function moveMap(){ //0617) 카드에 마우스 오버 시, 지도가 이동하도록 구현하기
     //카드가 만들어지는 상황 (3가지 : 1일차 새로고침||새로 등록한 카드||옵션 변경 시)
     //-> 해당 메소드를 3번 등록해야 함
     
@@ -235,20 +267,7 @@ function addList(){ //특정 장소를 사용자의 플랜 리스트에 추가�
     	 
     } */
     
-    
 
-    
-    //-----------------------------------------------------------------------
-    
-    (()=>{ //자동실행 함수
-    	
-    	
-    	alert("새로고침됨!")
-    	//장소카드 더블 클릭 시, 삭제되도록 로직 구현하기☆ (기존 카드는 이벤트 등록이 안 되는데 왤까?)
-
-      
-    })();
-    
             
 //------------------------------------------------------------------------
 
@@ -327,14 +346,12 @@ function displayPlaces(places) {
 			});
           	
           		overlay.setMap(null);
-          	
-	
+ 	
 			//마커 이벤트 > 클릭 이벤트 > 커스텀 오버레이를 만듦!		
-			let flag = true;
+
 			kakao.maps.event.addListener(marker, 'click', function() {
 				
-								
-				if(flag==true){
+
 				overlay.setMap(map);
 				
 				let lat = marker.getPosition().getLat(); //위도
@@ -345,45 +362,54 @@ function displayPlaces(places) {
 				
 				
 				//해당 마커의 장소명 가져오기--------------------------------------------
-				//console.log(places[i].address_name);
-				//console.log(title);
 				document.getElementById("hiddenTitle").innerText=title;
+				
 
 									
 				//저장해둔 "메모"가 있다면, 해당 메모를 input창의 value에 출력해주기
 				const savedData = JSON.parse(localStorage.getItem(document.getElementById("dayTitle").innerText));
-				console.log(savedData, title);
-
-				const memo = document.getElementById("memo");
 				
- 				savedData.forEach(e=>{					
-					if(title===e.title&&e.memo!=''){
-						memo.value = e.memo;
-					}					
-				});
+				
+				if(savedData!=null){
+						console.log(savedData, title);
+		
+						const memo = document.getElementById("memo");
+						
+						
+		 				savedData.forEach(e=>{					
+							if(title===e.title&&e.memo!=''){
+								memo.value = e.memo;
+							}					
+						});
+				}
 				
 								
 				//0616 마커의 이미지 변경을 위해----------------------------------------
 				const isAdded = document.getElementById("addBtn");
 				
 				isAdded.addEventListener("click", e=>{ //"좋아요" 클릭 발생 시
-					
-					var markerImage = new kakao.maps.MarkerImage(						
-								    'https://cdn4.iconfinder.com/data/icons/small-n-flat/24/map-marker-256.png', //마커 : 이미지
-								    new kakao.maps.Size(31, 35), new kakao.maps.Point(13, 34));				
- 									marker.setImage(markerImage);
+			
+/* 				var markerImage = new kakao.maps.MarkerImage( //마커 이미지 변경						
+							    'https://cdn4.iconfinder.com/data/icons/small-n-flat/24/map-marker-256.png', //마커 : 이미지
+							    new kakao.maps.Size(31, 35), new kakao.maps.Point(13, 34));	
+				
+ 				marker.setImage(markerImage); */
  									
- 					
-				}); //방문 장소에서 삭제 시 마커 이미지 원상태로 복귀하기... (removeCard()메소드에서 구현해야 할듯)
+ 				//0617 마커의 이미지 변경, 뿐만 아니라... 마커를 새로 생성하기 -> 생성된 마커를 기준으로 선 잇기도 가능하므로
+
+			    			    
+			    //마커 생성 메소드 호출하기
+			    addMarkerFunc(lat,lng,title);
 				
 				
-				flag = false;
+				}); 
+
 				
-				} else { //재클릭 시, 인포메이션 창 닫기
+				const exitBtn = document.getElementById("exitBtn"); //인포메이션 창 닫기
+				exitBtn.addEventListener("click", e=>{
 					overlay.setMap(null);
-					//marker.setImage(); //마커 이미지 해제 (문제점 : 다른 default이미지로 출력됨)
-					flag=true;
-				}
+				})
+				
 			});
 
           	//------------------------------------------------------------------------
@@ -411,38 +437,36 @@ function displayPlaces(places) {
 }
 
 
-//0616 마커 이미지 변경 관련 메소드 실험
+// "좋아요" 클릭 시, 해당 좌표를 토대로 마커 생성하는 함수
+// 내가 만들었던 마커들을 관리하기 위해, "배열"을 만듦
+let myMarkers = [];
+function addMarkerFunc(lat,lng,placeTitle){
 
+	// 마커 이미지
+	var imageSrc = 'https://cdn4.iconfinder.com/data/icons/small-n-flat/24/map-marker-256.png';
+	
+    // 마커 이미지의 이미지 크기 입니다
+    var imageSize = new kakao.maps.Size(36, 37); 
+    
+    // 마커 이미지를 생성합니다    
+    var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize); 
+    
+    // 마커를 생성합니다
+    var marker = new kakao.maps.Marker({
+        map: map, // 마커를 표시할 지도
+        //position: positions[i].latlng, // 마커를 표시할 위치
+        position: new kakao.maps.LatLng(lat,lng),
+        title : placeTitle, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
+        image : markerImage // 마커 이미지 
+    });
+    
+    myMarkers.push(marker);
+    //return myMarkers;
+    console.log("이만큼 만들었어!", myMarkers);
 
- 	
-/* 	(()=>{
-		//alert("자동실행함수?");
-		
-		
-		let ck = document.getElementById("dayTitle").innerText; //객체를 불러오지 못함. 왤까...
-		console.log("//////////////",ck);
-		
- 		 let savedData = JSON.parse(localStorage.getItem(document.getElementById("dayTitle").innerText));
+}    
 
-		 console.log(savedData);
-
-		 	for(let i=0;i>savedData.length;i++){
-		 	console.log("안녕....................");
-		 		let savedPosition = new kakao.maps.Latlng(savedData.latitude,savedData.longitude),
-		 	marker = addMarker(savedPosition,i);
-		 	
-		 	var markerImage = new kakao.maps.MarkerImage(						
-		 	    'https://cdn-icons-png.flaticon.com/512/727/727606.png', //마커 : 이미지
-		 	    new kakao.maps.Size(31, 35), new kakao.maps.Point(13, 34));				
-		 			marker.setImage(markerImage); 
-		 	
-		 } 
-		 
-		
-		
-	})();  */
-
-
+console.log("이만큼 만들었어! 여기서는 왜 확인이 안 될까?", myMarkers);
 
 
 
