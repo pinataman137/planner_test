@@ -159,6 +159,7 @@
 							
 		            		function printMyLog(myLog, logArr){ //일자 별 마커 및 선 출력 + 옵션 전환 時 선 삭제
 		            			
+		            			let markersArr = [];
 		            			
 			            		for(let i=0;i<myLog.length;i++){	
 			            			
@@ -181,18 +182,19 @@
 									    //마커 간 선으로 연결하기 ------------------------------------------------------------------------
 			
 										logArr.push(new kakao.maps.LatLng(myLog[i].latitude, myLog[i].longitude));
+									    markersArr.push(marker);
+									    console.log(markersArr);
 									
 			            		}
-		            		
-		            		
-							    
+    
 									    // 지도에 표시할 선을 생성합니다
 									    var polyline = new kakao.maps.Polyline({
 									        path: logArr, // 선을 구성하는 좌표배열 입니다
 									        strokeWeight: 5, // 선의 두께 입니다
 									        strokeColor: '#FFAE00', // 선의 색깔입니다
 									        strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-									        strokeStyle: 'solid' // 선의 스타일입니다
+									        strokeStyle: 'solid', // 선의 스타일입니다
+									        endArrow:'true' //화살표 표시
 									    });
 				
 									    // 지도에 선을 표시합니다 
@@ -204,13 +206,26 @@
 										//addDragEvent();
 									
 									//-----------------------------------------------------------------
- 										daysOption.addEventListener("change",e=>{
- 										//console.log(polyline.setMap()!=null?"널이 아니야":"널이야");
- 										if(polyline!=null&&polyline.setMap()!=null){
-											polyline.setMap(null);
- 										}//옵션 변경 時, "선"은 지워줌
+ 										daysOption.addEventListener("change",e=>{ //옵션 변경 시, 현재 일정에 해당하는 선과 마커를 지움!
  										
-									});
+ 										
+ 										if(polyline!=null&&polyline.setMap()!=null){ //선 삭제
+											polyline.setMap(null);
+ 										}
+ 										
+  										if(markersArr!=null&&markersArr.length!=0){ //마커 삭제
+  											
+ 											 markersArr.forEach(e=>{
+ 												 e.setVisible(false);
+ 											 });
+ 										
+  										} 
+ 										
+ 										
+ 										
+ 										
+ 										
+										});
 			            			
 			            			
 			            		}
