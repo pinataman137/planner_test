@@ -63,7 +63,7 @@
 <body>
 
 
-
+	<div id="wrap">
     <div id="container">
 	        <div id="left">
 	            <div id="myBox">
@@ -78,7 +78,7 @@
 					           			</form>   
 			                	
 			                	<!-- 사용자가 입력한 일수 만큼, select > option이 생성되도록 구현함 -->
-				                	<select id="daysOption" style="width:302px; margin-left:18px; font-size:18px;">
+				                	<select id="daysOption">
 				                	</select>			                			                
 			                </div>		                
 			            
@@ -109,17 +109,21 @@
 										        <!-- <div></div> -->
 										    </div>              	
 					                </div>
-					                <div id="buttons">
-					                	<button id="save">작성 완료</button>
-					                	<button id="delete" onclick="deleteSchedule();">작성 취소</button>
-					                </div>
 					                
 					        </div>
 	            		</div>
+	            		<div id="buttons">
+					         <button id="save" onclick="saveSchedule();">작성 완료</button>
+					         <button id="delete" onclick="deleteSchedule();">작성 취소</button>
+					     </div>
+
+					     
 	         </div>
-	    </div>
-	    <%@include file="/views/planner/mapTest2.jsp" %>
-	    
+	         	 </div>
+ 	     	     	<%@include file="/views/planner/mapTest2.jsp" %> 
+	   			 </div>
+
+
 	    
 	    
 	    	          		
@@ -391,6 +395,28 @@
 			            					    ,JSON.parse(localStorage.getItem(preCho)));
 			            			
 	            			});
+	            			
+	            			
+	            			//플래너 작성내용 저장||삭제 기능 구현--------------------------------------------------
+	            			
+	            			//팝업 창 위치 관련
+	            			var popupX = (document.body.offsetWidth/2)-(200/2);
+	            			var popupY = (window.screen.height/2)-(300/2);
+	            			console.log("변수 확인",popupX, popupY);
+	            			
+	            			const deleteSchedule = ()=>{
+	            				//alert("삭제하시겠습니까?");
+	            				window.open("<%=request.getContextPath()%>/deleteTempLog.do","title","width=400,height=200 left="+popupX+",top"+popupY);
+	            				
+	            			}
+	            			
+	            			const saveSchedule = ()=> {
+	            				alert("저장하시겠습니까?");
+	            			}
+	            			
+	            			
+	            			
+	            			
  
 		                </script>
 		                

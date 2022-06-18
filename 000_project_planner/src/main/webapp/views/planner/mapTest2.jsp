@@ -34,7 +34,7 @@
 <!--         </div>    -->        
     </div>
 </div>
-<button id="likesBtn" style="font-size:15px; width: 100px; height: 30px; position: absolute; left: 3px; top: 3px;">♥</button>
+<button id="searchListBtn" onclick="showList();" style="font-size:15px; width: 100px; height: 30px; position: absolute; left: 3px; lefttop: 3px;">검색하기</button>
 
 
 	<!-- 지도 관련 스크립트 -->
@@ -44,7 +44,23 @@
 	
 <script>
 
+const showList = (()=>{
+	//alert("안녕!");
+	const searchList = document.getElementById("menu_wrap");
 
+	//searchList.style.display="none";
+ 	let cnt = 0;
+	return()=>{
+		
+		if(++cnt%2!=0){
+			searchList.style.display="none";
+		} else {
+			searchList.style.display="";
+		}
+		
+	}
+	
+})();
 
 
 //마커를 담을 배열입니다
@@ -60,8 +76,8 @@ var mapContainer = document.getElementById('map'), // 지도를 표시할 div
 var map = new kakao.maps.Map(mapContainer, mapOption); 
 
 // 지도 위에 컨트롤러를 올림 : "좋아요" 버튼
-const likesBtn = document.getElementById("likesBtn");
-map.addControl(likesBtn, kakao.maps.ControlPosition.LEFT);
+const searchListBtn = document.getElementById("searchListBtn");
+map.addControl(searchListBtn, kakao.maps.ControlPosition.TOPRIGHT);
 
 
  map.relayout();
@@ -399,17 +415,17 @@ function displayPlaces(places) {
 				
 				isAdded.addEventListener("click", e=>{ //"좋아요" 클릭 발생 시
 			
-/* 				var markerImage = new kakao.maps.MarkerImage( //마커 이미지 변경						
-							    'https://cdn4.iconfinder.com/data/icons/small-n-flat/24/map-marker-256.png', //마커 : 이미지
-							    new kakao.maps.Size(31, 35), new kakao.maps.Point(13, 34));	
-				
- 				marker.setImage(markerImage); */
- 									
- 				//0617 마커의 이미지 변경, 뿐만 아니라... 마커를 새로 생성하기 -> 생성된 마커를 기준으로 선 잇기도 가능하므로
-
-			    			    
-			    //마커 생성 메소드 호출하기
-			    addMarkerFunc(lat,lng,title);
+	/* 				var markerImage = new kakao.maps.MarkerImage( //마커 이미지 변경						
+								    'https://cdn4.iconfinder.com/data/icons/small-n-flat/24/map-marker-256.png', //마커 : 이미지
+								    new kakao.maps.Size(31, 35), new kakao.maps.Point(13, 34));	
+					
+	 				marker.setImage(markerImage); */
+	 									
+	 				//0617 마커의 이미지 변경, 뿐만 아니라... 마커를 새로 생성하기 -> 생성된 마커를 기준으로 선 잇기도 가능하므로
+	
+				    			    
+				    //마커 생성 메소드 호출하기
+				    addMarkerFunc(lat,lng,title);
 				
 				
 				}); 

@@ -8,18 +8,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-@WebServlet("/plan/deleteTempLog.do")
-public class RemoveCardServlet extends HttpServlet {
+@WebServlet("/deleteTempLog.do")
+public class deleteTempLogServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
 
-    public RemoveCardServlet() {
+    public deleteTempLogServlet() {
+        super();
     }
 
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		//선택지 화면으로 이동
 		request.getRequestDispatcher("/views/planner/deleteTempLog.jsp").forward(request, response);
+		
 	}
+
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
