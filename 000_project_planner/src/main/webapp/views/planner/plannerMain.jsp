@@ -220,7 +220,7 @@
 		 										
  												//console.log("마커 확인///////////",markersArr);
  												//console.log("마커 확인2//////////", myMarkers);
-		  										if(markersArr!=null&&markersArr.length!=0){ //TODO 마커 삭제 (잘 안 되네)
+		  										if(markersArr!=null&&markersArr.length!=0){ 
 		  											
 		 											 markersArr.forEach(e=>{
 		 												 //console.log("//////////전환 확인", e);
@@ -282,26 +282,33 @@
 								}
 								
 		
-	            				//0613------------------------------------------------------------------
-	            				//1. select 前/後 일자 정보 가져오기
-	            				
-	            				let preCho = "";
-	            				let nowCho = "";
-	            				
-	            				daysOption.addEventListener("focus", e=>{
-	            					daysOption.blur();
-	            					preCho = daysOption.value;
-	            					
-	            				});
+		            				//0613------------------------------------------------------------------
+		            				//1. select 前/後 일자 정보 가져오기
+		            				
+		            				let preCho = "";
+		            				let nowCho = "";
+		            				
+		            				daysOption.addEventListener("focus", e=>{
+		            					daysOption.blur();
+		            					preCho = daysOption.value;
+		            					
+		            				});
 							
 														
-	            				daysOption.addEventListener("change",e=>{
+	            					daysOption.addEventListener("change",e=>{ //옵션 전환 시, 
+	            					//선택 옵션 일자에 저장된 일정이 있다면 해당 일정 정보를 출력하고, 
+	            					//)
 	            					
 	            					
-	            					console.log("마커 확인2//////////", myMarkers);
-	            					myMarkers.forEach(e=>{ //이전에 생성한 마커 삭제
-	            						//e.setVisible(false);
-	            					});
+ 		            					console.log("마커 확인2//////////", myMarkers);
+		            						myMarkers.forEach(e=>{ 
+		            							//TODO 0618) 이전 option에서 생성한 마커들 삭제하고 싶었으나, (문제 : 만든 것들 일괄적으로 사라진다는 점)
+		            							//mapTest2.jsp의 moveTo()메소드에서, 카드에 mouseover 시, 대응되는 좌표에 마커가 임시적으로 생성됐다 사라지는 로직 구현
+		            							//그러나 지도 상에서는 마커를 확인할 수 없으니 불편하고 가독성도 좋지 않음...
+		            							//(설사, 마커를 표시한다고 해도, 해당 마커에 대한 이벤트는 존재하지 않음. 만약 마커를 출력할 수 있다면 마우스 오버 시, 제공되는 서비스가 있어야 할듯. 인포윈도우를 띄우든가)
+		            							e.setVisible(false);
+		            							//전일자의 마커만 안 보이도록 구현할 수는 없을까?
+	            							}); 
 
 	            					
 	            					nowCho = daysOption.value;
@@ -405,7 +412,16 @@
 			            			
 	            			});
 	            			
+	            			</script>
 	            			
+	            			
+		            		<!-- "기록" DB저장을 위한 태그  -->
+	 		                <table id="saveLog_" name="saveLog" style="display:hidden">
+
+			                </table> 
+	            			
+          			
+	            			<script>
 	            			//플래너 작성내용 저장||삭제 기능 구현--------------------------------------------------
 	            			
 	            			//팝업 창 위치 관련
@@ -421,16 +437,67 @@
 	            			
 	            			const saveSchedule = ()=> {
 	            				alert("저장하시겠습니까?");
-	            				window.open
+	            				
+	            				//const ckLength = localStorage.length;
+	            				//TODO 0618) localStorage의 객체배열을 어떻게 저장할 것인지
+	            				
+	            				
+	            				const saveLog = document.getElementById("saveLog_");
+	            				
+	            				//let tempArr = [];
+	            				let makeTag = "";
+	            				
+	            				for(let i=0;i<localStorage.length;i++){
+	            					console.log("되긴할까.........",JSON.parse(localStorage.getItem(i+1)));
+	            					tempArr = JSON.parse(localStorage.getItem(i+1));
+	            					console.log(tempArr);
+	            					
+	            					for(let a=0;a<tempArr.length;a++){
+	            						
+	                					//태그를 만듦
+	                					//행은 일자별로 만들고, 항목은 구분자(콤마)로 구별할 수 있도록 함. 서블릿에서 parsing해서 DB에 저장하기	  
+	                					//TODO 0618) 테이블 형식으로 만들면... getParameter로 값을 가져올 수 없나...?
+	                					//방안 1) 일정별로 tr을 만듦 ------------------------------------------------
+/* 	                					makeTag+=
+	                					"<tr>"
+	                						+"<td name='day'>"+(i+1)+"</td>"
+	    	            					+"<td name='title'>"+tempArr[a].title+"</td>"
+	    	            					+"<td name='latitude'>"+tempArr[a].latitude+"</td>"
+	    	            					+"<td name='longitude'>"+tempArr[a].longitude+"</td>"
+	    	            					+"<td name='memo'>"+tempArr[a].memo+"</td>"
+	    	            				+"</tr>"
+	    	            				saveLog.innerHTML+=makeTag;
+	                					makeTag="";  */
+	                					
+	                					//방안 2) 일자 별로 tr을 만듦(구분자 등을 사용해서 방문 장소를 분별함) -----------------
+	                					
+  	                					makeTag+= "<tr>"
+	                							+"<input name='log' value='"
+	                							+(i+1)
+	                							+","+tempArr[a].title
+	                							+","+tempArr[a].latitude
+	                							+","+tempArr[a].longitude
+	                							+","+tempArr[a].memo
+	                							+"'></input>"+"</tr>";
+	                					saveLog.innerHTML+=makeTag;
+	                					makeTag="";  
+	                					//console.log(atempArr[i].title);
+	                						            						
+	            					}
+	            					//console.log(saveLog);
+	            					//saveLog.innerHTML+=makeTag;
+	            					
+	            					
+	            				}
+	            				
+						
+            					
+
+	            				
 	            			}
 	            			
-	            			
-	            			
-	            			
- 
+
 		                </script>
-		                
-		                
 		                
 		                
 		                <script>

@@ -17,7 +17,8 @@
 <div class="map_wrap">
     <div id="map"></div>
 
-    <div id="menu_wrap" class="bg_white">
+<!-- TODO 0618) 검색 리스트 출력 안 되도록 임시 설정! -->
+    <div id="menu_wrap" class="bg_white" style="display:none">
 		        <div class="option">
 		            <div>
 		            	<h1 id="listTitle" style="text-align:left;padding:10px;margin-bottom:0px;margin-left:5px;font-family:Rubik;">SEARCH!</h1>
@@ -167,7 +168,7 @@ var customContent = '<div class="wrap">' +
             '<div style="display:none", id="hiddenLat"></div>' //마커의 위도
             +'<div style="display:none", id="hiddenLng"></div>' //마커의 경도
             +'<div style="display:none", id="hiddenTitle"></div>' //마커의 장소명
-            +'<div style="display:none", id="markerInfo"></div>'; //0616 마커 관련 전반적인 정보 확인
+            +'<div style="display:none", id="mfgDate"></div>'; //0616 마커 관련 전반적인 정보 확인
  
 	function addList(){ //특정 장소를 사용자의 플랜 리스트에 추가하는 인터페이스
 	clearDragEvent();
@@ -222,6 +223,7 @@ var customContent = '<div class="wrap">' +
 
 
 	//"카드" 관련 이벤트 -----------------------------------------------------
+	
     function deletePlace(e){
 		
     	let dropZone = document.getElementById("dropZone");
@@ -271,7 +273,7 @@ var customContent = '<div class="wrap">' +
 				}    			
     		}
 	
-    		dropZone.removeChild(e.target);   
+    		dropZone.removeChild(e.target);
 		    		
     	});
  	
@@ -280,18 +282,46 @@ var customContent = '<div class="wrap">' +
 	
 
      
-    
+    	
     function moveMap(e){ //0617) 카드에 마우스 오버 시, 지도가 이동하도록 구현
     
     	//let dropZones = document.querySelectorAll("div#dropZone>div");
-    	
+    	var thisMarker = "";
+
+		
+		
 	     	e.addEventListener("mouseover",e=>{
 	 		
-	     			const lat = e.target.getAttribute("latitude");
-	     			const lng = e.target.getAttribute("longitude");
-	     			panTo(lat,lng);
+	    		const lat = e.target.getAttribute("latitude");
+	    		const lng = e.target.getAttribute("longitude");
+	    		
+	    		//0618) 마커가 생성됨 (선만으로는 확인하기 어려우니까)
+	    		var markerPosition  = new kakao.maps.LatLng(lat, lng); 
+	     		// 마커를 생성합니다
+	     		thisMarker = new kakao.maps.Marker({
+	     		    position: markerPosition
+	     		});
+     		
+     			panTo(lat,lng); //지도 이동 메소드
+
+	     		thisMarker.setMap(map); //마커 표시하는 메소드
 		
 	    	});
+	     	
+	     	//0618) 마우스 오버 시, 해당 일자에 마커가 생성됨. 마우스 아웃 시, 마커는 사라짐!
+	     	e.addEventListener("mouseout",e=>{
+	     		//alert("안녕!");
+	     		thisMarker.setMap(null);
+	     	})
+	     	
+	     	//카드를 더블클릭하면 해당 장소는 삭제되므로, 이때 마커도 삭제됨
+	     	e.addEventListener("dblclick",e=>{
+	     		thisMarker.setMap(null);
+	     	})
+	     	
+
+	     	
+	     	//thisMarker.setMap(null);
     	 
     } 
     
@@ -497,6 +527,17 @@ function addMarkerFunc(lat,lng,placeTitle){
         title : placeTitle, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
         image : markerImage // 마커 이미지 
     });
+    
+    
+    //TODO) 0618 : 특정 일자에 제조된 마커만을 따로 저장할 수는 없을까?
+    //별도로 저장할 수 있다면, 옵션 전환 시, 전일에 체크한 마커는 지도에서 안 보이게 설정할 수 있을 텐데!
+    //console.log("/////////현재 날짜를 확인할 수 있을까?", nowCho);
+    //const ckDay = document.getElementById("daysOption").value;
+    //console.log("/////////////////////",ckDay);
+    //marker.setAttribute("madeByDay",ckDay); //TODO 0618) 마커에 만들어진 날짜를 속성으로 부여하기
+    //console.log("가져올 수 있나?", marker.getAttribute("madeByDay"));
+    //const mfgDate = ("documentGe")
+    
     
     myMarkers.push(marker);
     //return myMarkers;
