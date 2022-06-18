@@ -18,7 +18,6 @@
     <div id="map"></div>
 
     <div id="menu_wrap" class="bg_white">
-<!--     	<div id="searchbox"> -->
 		        <div class="option">
 		            <div>
 		            	<h1 id="listTitle" style="text-align:left;padding:10px;margin-bottom:0px;margin-left:5px;font-family:Rubik;">SEARCH!</h1>
@@ -30,8 +29,7 @@
 		        </div>
 		        <hr id="listLine">
 		        <ul id="placesList"></ul>
-		        <div id="pagination"></div>
-<!--         </div>    -->        
+		        <div id="pagination"></div>  
     </div>
 </div>
 <button id="searchListBtn" onclick="showList();" style="font-size:15px; width: 100px; height: 30px; position: absolute; left: 3px; lefttop: 3px;">검색하기</button>
@@ -44,11 +42,10 @@
 	
 <script>
 
-const showList = (()=>{
-	//alert("안녕!");
+const showList = (()=>{ //"검색하기" 버튼 클릭 時, "검색 리스트"가 보이거나, 보이지 않도록 구현함
+	
 	const searchList = document.getElementById("menu_wrap");
 
-	//searchList.style.display="none";
  	let cnt = 0;
 	return()=>{
 		
@@ -239,10 +236,13 @@ var customContent = '<div class="wrap">' +
     		
         	//console.log(placeLat,placeLng);
         	
-    		//TODO 0617) 마커 삭제가 잘 안 됨... 카드 삭제할 때 실시간으로 좌표 값에 대응되는 마커도 함께 삭제되어야 하는데
-    		console.log("내가 생성한 마커들 : ", myMarkers); //내가 생성한 마커들
+    		//0617) 카드 삭제 시, 좌표 정보에 대응되는 마커도 삭제됨
+    		//console.log("내가 생성한 마커들 : ", myMarkers); //내가 생성한 마커들
     		
-    		//myMarkers.setMap(null);
+    		//0618) printMyLog()에서 생성된 마커도 해당 메소드가 적용되어야 함
+    		//console.log("///////////확인//////////////", markersArr);
+    		
+    		//마커 삭제 1) 작성 中, 내가 생성한 마커 지우기
     		for(let i=0;i<myMarkers.length;i++){
     			
     			//myMarkers[i].setMap(null); //마커 전체 삭제
@@ -252,11 +252,23 @@ var customContent = '<div class="wrap">' +
     			console.log(placeLat, placeLng);
     			
 				if(mkLat==placeLat&&mkLng==placeLng){
-					//alert("똑같네!");
 					myMarkers[i].setVisible(false);
 					break;
-				} //else alert("달라!");
+				}    			
+    		}
+    		
+    		//마커 삭제 2) printMyLog()메소드로부터 생성된 마커 지우기
+    		for(let i=0;i<markersArr.length;i++){
     			
+    			//myMarkers[i].setMap(null); //마커 전체 삭제
+    			let mkLat2 = markersArr[i].getPosition().getLat();
+    			let mkLng2 = markersArr[i].getPosition().getLng();
+    			console.log(mkLat2, mkLng2);
+    			
+				if(mkLat2==placeLat&&mkLng2==placeLng){
+					markersArr[i].setVisible(false);
+					break;
+				}    			
     		}
 	
     		dropZone.removeChild(e.target);   

@@ -161,10 +161,10 @@
 							document.getElementById("dayTitle").innerText= <%=fromDate!=0?fromDate:1%>
 							
 							
-							
+							let markersArr = [];
 		            		function printMyLog(myLog, logArr){ //일자 별 마커 및 선 출력 + 옵션 전환 時 선 삭제
 		            			
-		            			let markersArr = [];
+		            			
 		            			
 			            		for(let i=0;i<myLog.length;i++){	
 			            			
@@ -218,9 +218,12 @@
 													polyline.setMap(null);
 		 										}
 		 										
-		  										if(markersArr!=null&&markersArr.length!=0){ //마커 삭제
+ 												//console.log("마커 확인///////////",markersArr);
+ 												//console.log("마커 확인2//////////", myMarkers);
+		  										if(markersArr!=null&&markersArr.length!=0){ //TODO 마커 삭제 (잘 안 되네)
 		  											
 		 											 markersArr.forEach(e=>{
+		 												 //console.log("//////////전환 확인", e);
 		 												 e.setVisible(false);
 		 											 });
 		 										
@@ -293,6 +296,12 @@
 							
 														
 	            				daysOption.addEventListener("change",e=>{
+	            					
+	            					
+	            					console.log("마커 확인2//////////", myMarkers);
+	            					myMarkers.forEach(e=>{ //이전에 생성한 마커 삭제
+	            						//e.setVisible(false);
+	            					});
 
 	            					
 	            					nowCho = daysOption.value;
@@ -412,6 +421,7 @@
 	            			
 	            			const saveSchedule = ()=> {
 	            				alert("저장하시겠습니까?");
+	            				window.open
 	            			}
 	            			
 	            			
