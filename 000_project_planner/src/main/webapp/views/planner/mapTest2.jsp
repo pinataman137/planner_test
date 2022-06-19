@@ -202,6 +202,8 @@ var customContent = '<div class="wrap">' +
 	//-------------------------------------------------------------------
 
 	//장소 카드의 "속성"을 새로 생성해, 해당 장소의 정보를 저장하기--------------------
+	//console.log("////////////////////!!!!!!!>..???////////", nowCho);
+	addPlan.setAttribute("date",nowCho);
 	addPlan.setAttribute("id",addPlan.id);
 	addPlan.setAttribute("placeTitle",placeTitle);
 	addPlan.setAttribute("latitude",lat);

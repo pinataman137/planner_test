@@ -98,7 +98,7 @@
 			                
 									<div id="detailPlan"></div>					
 									
-										    <div id="dropZone" >
+										    <div id="dropZone">
 <!--  										    <div id="p1" class="box_drag" draggable="true" >plan 1</div>
 										        <div id="p2" class="box_drag" draggable="true" >plan 2</div>
 										        <div id="p3" class="box_drag" draggable="true" >plan 3</div>
@@ -259,6 +259,7 @@
 									
  										const div = document.createElement("div"); //태그 만들기
 										
+ 										div.setAttribute("date", 1);
 										div.setAttribute("id", dayOnePlan[i].id);
 										div.setAttribute("placeTitle", dayOnePlan[i].title);
 										div.setAttribute("latitude", dayOnePlan[i].latitude);
@@ -338,6 +339,7 @@
 																							
 													const div = document.createElement("div");				
 													
+													div.setAttribute("date", nowCho);
 													div.setAttribute("id", savedPlan[i].id);
 													div.setAttribute("placeTitle", savedPlan[i].title);
 													div.setAttribute("latitude", savedPlan[i].latitude);
@@ -371,8 +373,12 @@
 					            		let arr=[]; //"카드"의 정보(아이디, 장소명, 위도, 경도 -> 객체化)는 arr배열에 저장하기
 					            		
 					            		//장소의 정보를 저장하기 위해 > "생성자 함수"만들기
-					            		function Places(id,title,latitude,longitude,memo){
+					            		
+					            		console.log("///////////////!!!!!!!!!?/////////", nowCho);
+					            		
+					            		function Places(date,id,title,latitude,longitude,memo){
 					            			
+					            			this.date = date;
 					            			this.id = id;
 					            			this.title = title;
 					            			this.latitude = latitude;
@@ -385,7 +391,9 @@
 					            		for(let i=0;i<cards.length;i++){	
 					            			
 					            			//생성자 함수로 "장소"객체 생성 후, 배열arr에 저장하기
-					           				arr.push(new Places(cards[i].getAttribute("id"),
+					           				arr.push(new Places(
+					           									cards[i].getAttribute("date"),
+					           									cards[i].getAttribute("id"),
 					           									cards[i].getAttribute("placeTitle"),
 					           						            cards[i].getAttribute("latitude"),
 					           						            cards[i].getAttribute("longitude"),
@@ -414,12 +422,6 @@
 	            			
 	            			</script>
 	            			
-	            			
-		            		<!-- "기록" DB저장을 위한 태그  -->
-	 		                <table id="saveLog_" name="saveLog" style="display:hidden">
-
-			                </table> 
-	            			
           			
 	            			<script>
 	            			//플래너 작성내용 저장||삭제 기능 구현--------------------------------------------------
@@ -435,61 +437,80 @@
 	            				
 	            			}
 	            			
-	            			const saveSchedule = ()=> {
+	            			const saveSchedule = ()=> { //TODO 0619) AJAX로 객체배열 전송하기
 	            				alert("저장하시겠습니까?");
 	            				
-	            				//const ckLength = localStorage.length;
-	            				//TODO 0618) localStorage의 객체배열을 어떻게 저장할 것인지
 	            				
+	            				let tempArr = [];
 	            				
-	            				const saveLog = document.getElementById("saveLog_");
+<%-- 	            			tempArr = JSON.parse(localStorage.getItem(1));
+	            				console.log(tempArr); //첫 번째 날
 	            				
-	            				//let tempArr = [];
-	            				let makeTag = "";
+	            				let jsonData = JSON.stringify(tempArr[0]); //첫 번째 방문장소
+	            				console.log(jsonData);
 	            				
-	            				for(let i=0;i<localStorage.length;i++){
-	            					console.log("되긴할까.........",JSON.parse(localStorage.getItem(i+1)));
-	            					tempArr = JSON.parse(localStorage.getItem(i+1));
-	            					console.log(tempArr);
+            				
+ 	            				$.ajax({
+	            					
+	            					url : "<%=request.getContextPath()%>/planner/saveLog.do",
+	            					type : "get",
+	            					data : {"jsonData" : jsonData}, 
+	            					dataType : "json",
+	            					contentType : "application/json",
+	            					success : function(data){
+	            						console.log("저장 완료");
+	            					}, 
+	            					error : function(data){
+	            						console.log("저장 실패");
+	            					}
+	            					
+	            				});  --%>
+ 	            				
+ 	            				
+ 	            				//localStorage 반복문!
+	            				
+	            				let jsonData = "";
+ 	            				
+ 	            				for(let i=0;i<localStorage.length;i++){
+	            					
+	            					
+	            					tempArr = JSON.parse(localStorage.getItem(i+1)); //일자 별로 저장된 데이터 가져오기
+	            					//jsonData = JSON.stringify(tempArr[i]);
+	            					
+	            					console.log("객체배열 확인", (i+1)+"일자의 일정 : ", tempArr);
+									let cnt = 0;
 	            					
 	            					for(let a=0;a<tempArr.length;a++){
 	            						
-	                					//태그를 만듦
-	                					//행은 일자별로 만들고, 항목은 구분자(콤마)로 구별할 수 있도록 함. 서블릿에서 parsing해서 DB에 저장하기	  
-	                					//TODO 0618) 테이블 형식으로 만들면... getParameter로 값을 가져올 수 없나...?
-	                					//방안 1) 일정별로 tr을 만듦 ------------------------------------------------
-/* 	                					makeTag+=
-	                					"<tr>"
-	                						+"<td name='day'>"+(i+1)+"</td>"
-	    	            					+"<td name='title'>"+tempArr[a].title+"</td>"
-	    	            					+"<td name='latitude'>"+tempArr[a].latitude+"</td>"
-	    	            					+"<td name='longitude'>"+tempArr[a].longitude+"</td>"
-	    	            					+"<td name='memo'>"+tempArr[a].memo+"</td>"
-	    	            				+"</tr>"
-	    	            				saveLog.innerHTML+=makeTag;
-	                					makeTag="";  */
-	                					
-	                					//방안 2) 일자 별로 tr을 만듦(구분자 등을 사용해서 방문 장소를 분별함) -----------------
-	                					
-  	                					makeTag+= "<tr>"
-	                							+"<input name='log' value='"
-	                							+(i+1)
-	                							+","+tempArr[a].title
-	                							+","+tempArr[a].latitude
-	                							+","+tempArr[a].longitude
-	                							+","+tempArr[a].memo
-	                							+"'></input>"+"</tr>";
-	                					saveLog.innerHTML+=makeTag;
-	                					makeTag="";  
-	                					//console.log(atempArr[i].title);
-	                						            						
-	            					}
-	            					//console.log(saveLog);
-	            					//saveLog.innerHTML+=makeTag;
-	            					
-	            					
-	            				}
+	            						//일자별 객체배열, Servlet에 전송하기 > Ajax 활용
+	            						console.log((i+1), "일자의 일정 : ", tempArr[a]);
+	            						jsonData = JSON.stringify(tempArr[a]);
+	            						//여기에 ajax로 하나씩 서블릿에 보내 java객체化한 다음에, 해당 객체를 list에 차곡차곡 저장할 수 있을까?--------------------------
+	            						
+	     	            				$.ajax({ //TODO 0619) 원활히 실행되는지 확인 필수!
+	    	            					
+	    	            					url : "<%=request.getContextPath()%>/planner/saveLog.do",
+	    	            					type : "get",
+	    	            					data : {"jsonData" : jsonData}, 
+	    	            					dataType : "json",
+	    	            					async : false,
+	    	            					contentType : "application/json",
+	    	            					success : function(data){
+	    	            						console.log("저장 완료");
+	    	            					}, 
+	    	            					error : function(data){
+	    	            						console.log("저장 실패");
+	    	            					}
+	    	            					
+	    	            				}); 		
+	            								
+	            						//-----------------------------------------------------------------------------------------------------------
+	            						
+
+	            					}	            						            					            					
+	            				} 
 	            				
+	            				//console.log("1일자의 일정 ", tempArr[1]);
 						
             					
 
