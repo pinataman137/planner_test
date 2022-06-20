@@ -120,7 +120,7 @@
 					     
 	         </div>
 	         	 </div>
- 	     	     	<%@include file="/views/planner/mapTest2.jsp" %> 
+ 	     	     	<%@include file="/views/planner/plannerMap.jsp" %> 
 	   			 </div>
 
 
@@ -259,14 +259,14 @@
 									
  										const div = document.createElement("div"); //태그 만들기
 										
- 										div.setAttribute("date", 1);
+ 										div.setAttribute("day", 1);
 										div.setAttribute("id", dayOnePlan[i].id);
-										div.setAttribute("placeTitle", dayOnePlan[i].title);
+										div.setAttribute("placeName", dayOnePlan[i].placeName);
 										div.setAttribute("latitude", dayOnePlan[i].latitude);
 										div.setAttribute("longitude", dayOnePlan[i].longitude);
 										div.setAttribute("memo", dayOnePlan[i].memo);
 										
-										div.innerText = dayOnePlan[i].title;
+										div.innerText = dayOnePlan[i].placeName;
 										div.classList.add("box_drag");
 										div.setAttribute("draggable",true);
 										document.getElementById("dropZone").appendChild(div); 
@@ -339,14 +339,14 @@
 																							
 													const div = document.createElement("div");				
 													
-													div.setAttribute("date", nowCho);
+													div.setAttribute("day", nowCho);
 													div.setAttribute("id", savedPlan[i].id);
-													div.setAttribute("placeTitle", savedPlan[i].title);
+													div.setAttribute("placeName", savedPlan[i].placeName);
 													div.setAttribute("latitude", savedPlan[i].latitude);
 													div.setAttribute("longitude", savedPlan[i].longitude);
 													div.setAttribute("memo", savedPlan[i].memo);
 													
-													div.innerText = savedPlan[i].title;
+													div.innerText = savedPlan[i].placeName;
 													div.classList.add("box_drag");
 													div.setAttribute("draggable",true);
 													document.getElementById("dropZone").appendChild(div); 
@@ -376,11 +376,11 @@
 					            		
 					            		console.log("///////////////!!!!!!!!!?/////////", nowCho);
 					            		
-					            		function Places(date,id,title,latitude,longitude,memo){
+					            		function Places(day,id,placeName,latitude,longitude,memo){
 					            			
-					            			this.date = date;
+					            			this.day = day;
 					            			this.id = id;
-					            			this.title = title;
+					            			this.placeName = placeName;
 					            			this.latitude = latitude;
 					            			this.longitude = longitude;
 					            			this.memo = memo;
@@ -392,9 +392,9 @@
 					            			
 					            			//생성자 함수로 "장소"객체 생성 후, 배열arr에 저장하기
 					           				arr.push(new Places(
-					           									cards[i].getAttribute("date"),
+					           									cards[i].getAttribute("day"),
 					           									cards[i].getAttribute("id"),
-					           									cards[i].getAttribute("placeTitle"),
+					           									cards[i].getAttribute("placeName"),
 					           						            cards[i].getAttribute("latitude"),
 					           						            cards[i].getAttribute("longitude"),
 					           						            cards[i].getAttribute("memo")));
@@ -438,7 +438,7 @@
 	            			}
 	            			
 	            			const saveSchedule = ()=> { //TODO 0619) AJAX로 객체배열 전송하기
-	            				alert("저장하시겠습니까?");
+	            				alert("저장하시겠습니까?"); 
 	            				
 	            				
 	            				let tempArr = [];
@@ -503,15 +503,11 @@
 	    	            					}
 	    	            					
 	    	            				}); 		
-	            								
-	            						//-----------------------------------------------------------------------------------------------------------
-	            						
 
 	            					}	            						            					            					
 	            				} 
 	            				
-	            				//console.log("1일자의 일정 ", tempArr[1]);
-						
+
             					
 
 	            				

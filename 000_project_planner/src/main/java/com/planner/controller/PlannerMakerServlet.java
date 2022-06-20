@@ -21,12 +21,7 @@ public class PlannerMakerServlet extends HttpServlet {
 
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		//int days = Integer.parseInt(request.getParameter("days"));
-		//System.out.println(days);
-		//request.setAttribute("days", days);
-		//request.getRequestDispatcher("/views/planner/plannermap.jsp").forward(request, response);
-		
+
 		//쿠키 사용 後
 		//"days"를 유지하고 있어야 함. 화면이 전환될 때도 이가 기준이 되기 때문임
 		//"쿠키"를 사용하려고 함. "쿠키"는 HttpSession에 저장되는 시점(=플래너 확정 시점)에 삭제할 것임
@@ -34,15 +29,17 @@ public class PlannerMakerServlet extends HttpServlet {
 		Cookie forOption = new Cookie("forOption",days);
 		forOption.setMaxAge(24*60*60); //하루 동안 유지함
 		response.addCookie(forOption);
+		
+		//작성자 정의 "테마" 정보를 넘기고자 함
+		String theme = request.getParameter("theme");
+		Cookie forTheme = new Cookie("forTheme",theme);
+		forTheme.setMaxAge(24*60*60);
+		response.addCookie(forTheme);
+		
 		response.sendRedirect(request.getContextPath()+"/views/planner/plannerMain.jsp");
 		
 		//-----------------------------------------------------------------------------------
-		//충돌 테스트
-		String confictTest = "충돌~";
-		//git 테스트
-		String test = "pinataman branch에는 없지!";
-		
-		
+
 		
 	}
 

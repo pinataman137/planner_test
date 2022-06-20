@@ -175,10 +175,10 @@ var customContent = '<div class="wrap">' +
 	       	
 	const lat = document.getElementById("hiddenLat").innerText;
 	const lng = document.getElementById("hiddenLng").innerText;
- 	const placeTitle = document.getElementById("hiddenTitle").innerText;
+ 	const placeName = document.getElementById("hiddenTitle").innerText;
  	const memo = document.getElementById("memo").value;
  	
-	console.log("위도 : ",lat,"경도 : ",lng,"타이틀 : ",placeTitle,"메모 : ",memo);
+	console.log("위도 : ",lat,"경도 : ",lng,"타이틀 : ",placeName,"메모 : ",memo);
 
 	//장소 카드 생성해, 플랜 리스트에 추가하기 -----------------------------------
 	const dropZone = document.getElementById("dropZone");
@@ -186,7 +186,7 @@ var customContent = '<div class="wrap">' +
 	const addPlan = document.createElement("div"); //div생성하기
 	addPlan.classList.add("box_drag");
 	addPlan.setAttribute("draggable",true);
-	addPlan.innerText = placeTitle;
+	addPlan.innerText = placeName;
 
 	//index를 식별하기 위해, 현재 dropZone에 자식 태그들이 몇 개 있는지 확인하기	
 	
@@ -203,15 +203,15 @@ var customContent = '<div class="wrap">' +
 
 	//장소 카드의 "속성"을 새로 생성해, 해당 장소의 정보를 저장하기--------------------
 	//console.log("////////////////////!!!!!!!>..???////////", nowCho);
-	addPlan.setAttribute("date",nowCho);
+	addPlan.setAttribute("day",nowCho);
 	addPlan.setAttribute("id",addPlan.id);
-	addPlan.setAttribute("placeTitle",placeTitle);
+	addPlan.setAttribute("placeName",placeName);
 	addPlan.setAttribute("latitude",lat);
 	addPlan.setAttribute("longitude",lng);
 	addPlan.setAttribute("memo",memo);
 	//"속성"이 잘 저장됐는지, 확인하기-------------------------------------------
 	console.log("속성 > 아이디 : ", addPlan.getAttribute("id"));
-	console.log("속성 > 장소명 : ", addPlan.getAttribute("placeTitle"));
+	console.log("속성 > 장소명 : ", addPlan.getAttribute("placeName"));
 	console.log("속성 > 위도 : ", addPlan.getAttribute("latitude"));
 	console.log("속성 > 경도 : ", addPlan.getAttribute("longitude"));
 	console.log("속성 > 메모 : ", addPlan.getAttribute("memo"));
@@ -510,7 +510,7 @@ function displayPlaces(places) {
 // "좋아요" 클릭 시, 해당 좌표를 토대로 마커 생성하는 함수
 // 내가 만들었던 마커들을 관리하기 위해, "배열"을 만듦
 let myMarkers = [];
-function addMarkerFunc(lat,lng,placeTitle){
+function addMarkerFunc(lat,lng,placeName){
 
 	// 마커 이미지
 	var imageSrc = 'https://cdn4.iconfinder.com/data/icons/small-n-flat/24/map-marker-256.png';
@@ -526,7 +526,7 @@ function addMarkerFunc(lat,lng,placeTitle){
         map: map, // 마커를 표시할 지도
         //position: positions[i].latlng, // 마커를 표시할 위치
         position: new kakao.maps.LatLng(lat,lng),
-        title : placeTitle, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
+        title : placeName, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
         image : markerImage // 마커 이미지 
     });
     
