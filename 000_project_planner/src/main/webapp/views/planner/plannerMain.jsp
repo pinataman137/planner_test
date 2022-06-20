@@ -5,17 +5,37 @@
 
 	//쿠키 사용 後
 	int days=0;
+	String theme = "";
+	String title = "";
+	int area = 0;
+	int sigungu = 0;
+	
 	Cookie[]cookies = request.getCookies();
 	if(cookies!=null){
 		
 		for(Cookie c : cookies){
 			
-			if(c.getName().equals("forOption")){
-				days = Integer.parseInt(c.getValue());
-				
-			}			
-		}
-		
+			if(c.getName().equals("forOption")){ //여행 일자
+				days = Integer.parseInt(c.getValue());				
+			}
+			
+			if(c.getName().equals("forTheme")){ //여행 테마
+				theme = c.getValue();
+			}
+			
+			if(c.getName().equals("forTitle")){ //플랜 제목
+				title = c.getValue();
+			}
+			
+			if(c.getName().equals("forArea")){ //여행 일자
+				area = Integer.parseInt(c.getValue());				
+			}
+			
+			if(c.getName().equals("forSigungu")){ //여행 일자
+				sigungu = Integer.parseInt(c.getValue());			
+			}
+			
+		}		
 	}
 	
 	
@@ -120,7 +140,7 @@
 					     
 	         </div>
 	         	 </div>
- 	     	     	<%@include file="/views/planner/mapTest2.jsp" %> 
+ 	     	     	<%@include file="/views/planner/plannerMap.jsp" %> 
 	   			 </div>
 
 
@@ -259,14 +279,14 @@
 									
  										const div = document.createElement("div"); //태그 만들기
 										
- 										div.setAttribute("date", 1);
+ 										div.setAttribute("day", 1);
 										div.setAttribute("id", dayOnePlan[i].id);
-										div.setAttribute("placeTitle", dayOnePlan[i].title);
+										div.setAttribute("placeName", dayOnePlan[i].placeName);
 										div.setAttribute("latitude", dayOnePlan[i].latitude);
 										div.setAttribute("longitude", dayOnePlan[i].longitude);
 										div.setAttribute("memo", dayOnePlan[i].memo);
 										
-										div.innerText = dayOnePlan[i].title;
+										div.innerText = dayOnePlan[i].placeName;
 										div.classList.add("box_drag");
 										div.setAttribute("draggable",true);
 										document.getElementById("dropZone").appendChild(div); 
@@ -339,14 +359,14 @@
 																							
 													const div = document.createElement("div");				
 													
-													div.setAttribute("date", nowCho);
+													div.setAttribute("day", nowCho);
 													div.setAttribute("id", savedPlan[i].id);
-													div.setAttribute("placeTitle", savedPlan[i].title);
+													div.setAttribute("placeName", savedPlan[i].placeName);
 													div.setAttribute("latitude", savedPlan[i].latitude);
 													div.setAttribute("longitude", savedPlan[i].longitude);
 													div.setAttribute("memo", savedPlan[i].memo);
 													
-													div.innerText = savedPlan[i].title;
+													div.innerText = savedPlan[i].placeName;
 													div.classList.add("box_drag");
 													div.setAttribute("draggable",true);
 													document.getElementById("dropZone").appendChild(div); 
@@ -376,11 +396,11 @@
 					            		
 					            		console.log("///////////////!!!!!!!!!?/////////", nowCho);
 					            		
-					            		function Places(date,id,title,latitude,longitude,memo){
+					            		function Places(day,id,placeName,latitude,longitude,memo){
 					            			
-					            			this.date = date;
+					            			this.day = day;
 					            			this.id = id;
-					            			this.title = title;
+					            			this.placeName = placeName;
 					            			this.latitude = latitude;
 					            			this.longitude = longitude;
 					            			this.memo = memo;
@@ -392,9 +412,9 @@
 					            			
 					            			//생성자 함수로 "장소"객체 생성 후, 배열arr에 저장하기
 					           				arr.push(new Places(
-					           									cards[i].getAttribute("date"),
+					           									cards[i].getAttribute("day"),
 					           									cards[i].getAttribute("id"),
-					           									cards[i].getAttribute("placeTitle"),
+					           									cards[i].getAttribute("placeName"),
 					           						            cards[i].getAttribute("latitude"),
 					           						            cards[i].getAttribute("longitude"),
 					           						            cards[i].getAttribute("memo")));
@@ -438,10 +458,11 @@
 	            			}
 	            			
 	            			const saveSchedule = ()=> { //TODO 0619) AJAX로 객체배열 전송하기
-	            				alert("저장하시겠습니까?");
+	            				alert("저장하시겠습니까?"); 
+	            			
 	            				
 	            				
-	            				let tempArr = [];
+
 	            				
 <%-- 	            			tempArr = JSON.parse(localStorage.getItem(1));
 	            				console.log(tempArr); //첫 번째 날
@@ -470,12 +491,11 @@
  	            				//localStorage 반복문!
 	            				
 	            				let jsonData = "";
+	            				let tempArr = [];
  	            				
  	            				for(let i=0;i<localStorage.length;i++){
 	            					
-	            					
 	            					tempArr = JSON.parse(localStorage.getItem(i+1)); //일자 별로 저장된 데이터 가져오기
-	            					//jsonData = JSON.stringify(tempArr[i]);
 	            					
 	            					console.log("객체배열 확인", (i+1)+"일자의 일정 : ", tempArr);
 									let cnt = 0;
@@ -487,7 +507,7 @@
 	            						jsonData = JSON.stringify(tempArr[a]);
 	            						//여기에 ajax로 하나씩 서블릿에 보내 java객체化한 다음에, 해당 객체를 list에 차곡차곡 저장할 수 있을까?--------------------------
 	            						
-	     	            				$.ajax({ //TODO 0619) 원활히 실행되는지 확인 필수!
+	     	            				$.ajax({
 	    	            					
 	    	            					url : "<%=request.getContextPath()%>/planner/saveLog.do",
 	    	            					type : "get",
@@ -503,15 +523,11 @@
 	    	            					}
 	    	            					
 	    	            				}); 		
-	            								
-	            						//-----------------------------------------------------------------------------------------------------------
-	            						
 
 	            					}	            						            					            					
 	            				} 
 	            				
-	            				//console.log("1일자의 일정 ", tempArr[1]);
-						
+
             					
 
 	            				

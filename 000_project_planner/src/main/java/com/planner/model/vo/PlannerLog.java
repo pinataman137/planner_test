@@ -7,11 +7,13 @@ import lombok.Data;
 @Data
 public class PlannerLog {
 
-	String date;
-	String id;
-	String title;
-	String latitude;
-	String longitude;
-	String memo;
+	private String plannerNo;
+	private String planCode;
+	private String day;
+	private String id;
+	private String placeName;
+	private String latitude;
+	private String longitude;
+	private String memo;
 	
 }
