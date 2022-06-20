@@ -72,9 +72,9 @@
 				<hr id="line">
 				<form action="<%=request.getContextPath()%>/plannermaker.do" method="post">
 					<h3 class="title">플랜 제목</h3>
-						<input type="text" name="plannerTitle">
+						<input type="text" name="plannerTitle" required>
 					<h3 class="title">여행 일자</h3>
-						<input type="text" name="days" placeholder="작성 예시) 2박3일 → 3">일
+						<input type="text" name="days" placeholder="작성 예시) 2박3일 → 3" required>일
 					<h3 class="title">테마</h3>
 						<select name="theme" style="width:180px;">
 							<option value="맛집">맛집</option>
@@ -85,8 +85,8 @@
 							<option value="자유여행">자유여행</option>
 						</select>
 					<h3 class="title"><span style="color:red">주요</span> 방문 지역</h3>
-						<select name="area" id="area_" style="width:180px;">
-							<option>--선택--</option>
+						<select name="area" id="area_" style="width:180px;" required>
+							<option value="">--선택--</option>
 							<option value="1">서울</option>
 							<option value="2">인천</option>
 							<option value="3">대전</option>
@@ -105,8 +105,8 @@
 							<option value="38">전라남도</option>
 							<option value="39">제주도</option>			
 						</select>
-						<select id="sigungu_" name="sigungu" style="width:180px;">
-							<option>--선택--<option>
+						<select id="sigungu_" name="sigungu" style="width:180px;" required>
+							<option value="">--선택--<option>
 						</select>
 					<br><br>
 					<button id="btn">플래너 만들기</button>
@@ -301,6 +301,35 @@
 			});
 			
 		}
+		
+		console.log(document.querySelector("#area_ option").value);
+		console.log(document.querySelector("#sigungu_ option").value);
+		
+		
+		
+		
+		
+		
+		
+/* 		function fn_ckValidate(){
+			
+			const ckArea = document.querySelector("#area_ option").value;
+			const ckSigungu = document.querySelector("#sigungu_ option").value;
+			//const ckSigungu = document.getElementById("sigungu_").value;
+			
+			console.log(ckArea, ckSigungu);
+			
+ 			if(ckArea==""){
+
+				alert("주요 방문지역을 입력해주세요!");
+				return false;
+			}
+			if(ckSigungu==""){
+				return false;
+			} 
+			
+			return true;
+		} */
 		
 		
 	

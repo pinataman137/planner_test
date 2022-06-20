@@ -36,6 +36,24 @@ public class PlannerMakerServlet extends HttpServlet {
 		forTheme.setMaxAge(24*60*60);
 		response.addCookie(forTheme);
 		
+		//작성자 정의 "제목" 정보를 넘기고자 함
+		String title = request.getParameter("title");
+		Cookie forTitle = new Cookie("forTitle",title);
+		forTitle.setMaxAge(24*60*60);
+		response.addCookie(forTitle);
+		
+		//작성자 정의 "주요 방문 지역" 정보를 넘기고자 함
+		//1. 지역코드 > 대분류
+		String area = request.getParameter("area");
+		Cookie forArea = new Cookie("forArea",area);
+		forArea.setMaxAge(24*60*60);
+		response.addCookie(forArea);
+		//2. 지역코드 > 소분류(시/군/구)
+		String sigungu = request.getParameter("sigungu");
+		Cookie forSigungu = new Cookie("forSigungu",sigungu);
+		forSigungu.setMaxAge(24*60*60);
+		response.addCookie(forSigungu);
+		
 		response.sendRedirect(request.getContextPath()+"/views/planner/plannerMain.jsp");
 		
 		//-----------------------------------------------------------------------------------
